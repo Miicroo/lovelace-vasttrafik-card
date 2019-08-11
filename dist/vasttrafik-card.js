@@ -24,7 +24,23 @@ class VasttrafikCard extends Polymer.Element {
 
   set hass(hass) {
     this._hass = hass;
+
+    if(!this._isVerified) {
+      this.verifyEntities();
+      this._isVerified = true;
+    }
+
     this.update();
+  }
+
+  verifyEntities() {
+    this._config.entities.forEach(entityId => {
+      const attribution = this._hass.states[entityId].attributes.attribution;
+
+      if(!attribution || !attribution.toLowerCase().includes('västtrafik')) {
+        console.warn(`WARNING: ${entityId} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
+      }
+    });
   }
 
   update() {
