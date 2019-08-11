@@ -19,12 +19,12 @@ entities:
   - sensor.fran_hjalmar
 ```
 
-![Example 1](https://raw.githubusercontent.com/Miicroo/homeassistant-custom-components/master/lovelace-vasttrafik-card/resources/1.png)
-![Example 2](https://raw.githubusercontent.com/Miicroo/homeassistant-custom-components/master/lovelace-vasttrafik-card/resources/2.png)
-![Example 3](https://raw.githubusercontent.com/Miicroo/homeassistant-custom-components/master/lovelace-vasttrafik-card/resources/3.png)
+![Example 1](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/1.png)
+![Example 2](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/2.png)
+![Example 3](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/3.png)
 
 ## Tram and bus styles
-![Colours for each tram or bus line](https://raw.githubusercontent.com/Miicroo/homeassistant-custom-components/master/lovelace-vasttrafik-card/resources/colours.png)
+![Colours for each tram or bus line](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/colours.png)
 
 ## In case of errors
 1. There is no explicit check to see if the entity id you provide is a Västtrafik-sensor, so you have to check yourself
