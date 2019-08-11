@@ -19,6 +19,7 @@ class VasttrafikCard extends Polymer.Element {
     }
     this._config = config;
     this._title = config.title || 'Västtrafik';
+    this.update();
   }
 
   set hass(hass) {
