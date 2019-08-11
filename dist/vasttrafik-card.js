@@ -70,6 +70,8 @@ class VasttrafikCard extends Polymer.Element {
     const departureTime = entity.state;
     const accessibilityIcon = attributes.accessibility === 'wheelChair' ? 'mdi:wheelchair-accessibility' : '';
     const timeUntilDeparture = this.getTimeUntil(departureTime);
+    const from = attributes.from || '';
+    const to = attributes.to || '';
 
     return `<tr>
               <td class="${lineClass} line">${line}</td>
@@ -78,8 +80,9 @@ class VasttrafikCard extends Polymer.Element {
               <td>${departureTime}</td>
               <td>${track}</td>
               <td><ha-icon icon="${accessibilityIcon}"></ha-icon></td>
+              <td>${from}</td>
+              <td>${to}</td>
             </tr>`;
-
   }
 
   getLineClass(line) {
