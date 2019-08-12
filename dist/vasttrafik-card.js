@@ -1,16 +1,16 @@
-class VasttrafikCard extends Polymer.Element {
+const LitElement = Object.getPrototypeOf(customElements.get("hui-view"));
+const html = LitElement.prototype.html;
 
-  static get template() {
-    return Polymer.html`
-      <link type="text/css" rel="stylesheet" href="/local/custom_ui/vasttrafik-card/vasttrafik-card.css"></link>
-      <ha-card>
-        <div class="header">
-            [[_title]]
-        </div>
-        <table class="content">
-        </table>
-      </ha-card>
-    `
+class VasttrafikCard extends LitElement {
+  static get properties() {
+    return {
+      _config: {
+        cardTemplates: []
+      },
+      _hass: {
+        states: []
+      }
+    };
   }
 
   setConfig(config) {
@@ -18,8 +18,6 @@ class VasttrafikCard extends Polymer.Element {
       throw new Error("Specify at least one entity!");
     }
     this._config = config;
-    this._title = config.title || 'Västtrafik';
-    this.update();
   }
 
   set hass(hass) {
@@ -30,7 +28,7 @@ class VasttrafikCard extends Polymer.Element {
       this._isVerified = true;
     }
 
-    this.update();
+    this.createCardTemplates();
   }
 
   verifyEntities() {
@@ -43,20 +41,36 @@ class VasttrafikCard extends Polymer.Element {
     });
   }
 
-  update() {
-    if(!this.shadowRoot) {
-      return;
-    }
-
-    const entitiesAsUi = this._config.entities
-                                     .map(id => this.createRow(id))
-                                     .reduce((all, current) => all + current, '');
-
-    const contentElement = this.shadowRoot.querySelector(".content");
-    contentElement.innerHTML = entitiesAsUi;
+  createCardTemplates() {
+    this._config.cardTemplates = [{
+      title: this._config.title || 'Västtrafik',
+      entityIds: this._config.entities,
+    }];
   }
 
-  createRow(entityId) {
+  render() {
+    const cardTemplates = this._config.cardTemplates.map(cardTemplate => this.renderCardTemplate(cardTemplate));
+
+    return html`
+      <link type="text/css" rel="stylesheet" href="/community_plugin/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
+      <ha-card>
+        <div>
+          ${cardTemplates}
+        </div>
+      </ha-card>`;
+  }
+
+  renderCardTemplate(cardTemplate) {
+    return html`
+        <div class="header">
+          ${cardTemplate.title}
+        </div>
+        <table>
+          ${cardTemplate.entityIds.map(entityId => this.renderEntity(entityId))}
+        </table>`;
+  }
+
+  renderEntity(entityId) {
     if (!(entityId in this._hass.states)) {
        return;
     }
@@ -73,7 +87,7 @@ class VasttrafikCard extends Polymer.Element {
     const from = attributes.from || '';
     const to = attributes.to || '';
 
-    return `<tr>
+    return html`<tr>
               <td class="${lineClass} line">${line}</td>
               <td>${direction}</td>
               <td>${timeUntilDeparture} minutes</td>
