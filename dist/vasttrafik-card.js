@@ -23,7 +23,7 @@ class VasttrafikCard extends LitElement {
   set hass(hass) {
     this._hass = hass;
 
-    if(!this._isVerified) {
+    if (!this._isVerified) {
       this.verifyEntities();
       this._isVerified = true;
     }
@@ -35,17 +35,47 @@ class VasttrafikCard extends LitElement {
     this._config.entities.forEach(entityId => {
       const attribution = this._hass.states[entityId].attributes.attribution;
 
-      if(!attribution || !attribution.toLowerCase().includes('västtrafik')) {
+      if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
         console.warn(`WARNING: ${entityId} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
       }
     });
   }
 
   createCardTemplates() {
-    this._config.cardTemplates = [{
-      title: this._config.title || 'Västtrafik',
-      entityIds: this._config.entities,
-    }];
+    if (this._config.groupBy) {
+      const titleFunction = this._config.groupBy === 'from' ? 
+                              entityId => this._hass.states[entityId].attributes.from :
+                              entityId => this._hass.states[entityId].attributes.to;
+
+      const sortedEntityObject = this.getEntityIdsByTitle(titleFunction);
+      this._config.cardTemplates = Object.keys(sortedEntityObject)
+                                    .map(title => {
+                                      return {
+                                        'title': title,
+                                        'entityIds': sortedEntityObject[title],
+                                      }; 
+                                    });
+    } else {
+      this._config.cardTemplates = [{
+        title: this.getValidTitle(null),
+        entityIds: this._config.entities,
+      }];
+    }
+  }
+
+  getEntityIdsByTitle(titleFunction) {
+    return this._config.entities.reduce((obj, entityId) => {
+        const title = this.getValidTitle(titleFunction(entityId));
+        if (!obj.hasOwnProperty(title)) {
+          obj[title] = []
+        }
+        obj[title].push(entityId);
+        return obj;
+      }, {});
+  }
+
+  getValidTitle(wantedTitle) {
+    return wantedTitle || this._config.title || 'Västtrafik';
   }
 
   render() {
@@ -87,6 +117,9 @@ class VasttrafikCard extends LitElement {
     const from = attributes.from || '';
     const to = attributes.to || '';
 
+    const shouldDisplayFrom = this._config.groupBy && this._config.groupBy !== 'from';
+    const shouldDisplayTo = this._config.groupBy && this._config.groupBy !== 'to';
+
     return html`<tr>
               <td class="${lineClass} line">${line}</td>
               <td>${direction}</td>
@@ -94,8 +127,8 @@ class VasttrafikCard extends LitElement {
               <td>${departureTime}</td>
               <td>${track}</td>
               <td><ha-icon icon="${accessibilityIcon}"></ha-icon></td>
-              <td>${from}</td>
-              <td>${to}</td>
+              ${shouldDisplayFrom ? html`<td>${from}</td>`: html``}
+              ${shouldDisplayTo ? html`<td>${to}</td>`: html``}
             </tr>`;
   }
 
