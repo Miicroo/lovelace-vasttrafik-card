@@ -37,7 +37,7 @@ type: 'custom:vasttrafik-card'
 # title has no effect here
 entities:
   - sensor.fran_valand_to_hjalmar
-  - sensor.fran_valand_to_korsvagen
+  - sensor.fran_valand_to_vasa
   - sensor.fran_hjalmar_to_valand
 groupBy: from
 ```
