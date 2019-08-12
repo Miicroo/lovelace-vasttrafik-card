@@ -73,13 +73,6 @@ html {
     color: var(--primary-text-color);
 }
 
-.header {
-    font-family: var(--paper-font-headline_-_font-family); -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing); font-size: var(--paper-font-headline_-_font-size); font-weight: var(--paper-font-headline_-_font-weight); letter-spacing: var(--paper-font-headline_-_letter-spacing); line-height: var(--paper-font-headline_-_line-height);
-    text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);
-    opacity: var(--dark-primary-opacity);
-    padding: 24px 16px 0px 16px;
-}
-
 table {
     padding-left: 16px;
     width: 100%;
@@ -161,4 +154,3 @@ table {
     color: white;
     background-color: rgb(0, 182, 240);
 }
-

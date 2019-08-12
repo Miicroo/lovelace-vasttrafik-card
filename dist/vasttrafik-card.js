@@ -92,7 +92,7 @@ class VasttrafikCard extends LitElement {
 
   renderCardTemplate(cardTemplate) {
     return html`
-        <div class="header">
+        <div class="card-header">
           ${cardTemplate.title}
         </div>
         <table>
