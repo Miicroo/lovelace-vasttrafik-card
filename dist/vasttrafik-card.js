@@ -1,11 +1,8 @@
-const LitElement = Object.getPrototypeOf(customElements.get("hui-view"));
-const html = LitElement.prototype.html;
-
-class VasttrafikCard extends LitElement {
+class VasttrafikLeaveCard extends LitElement {
   static get properties() {
     return {
       _config: {
-        cardTemplates: []
+        entities: []
       },
       _hass: {
         states: []
@@ -17,6 +14,13 @@ class VasttrafikCard extends LitElement {
     if (!config.entities || config.entities.length === 0) {
       throw new Error("Specify at least one entity!");
     }
+
+    for(let i = 0; i<config.entities.length; i++) {
+      if (typeof config.entities[i] === 'string') {
+        config.entities[i] = {'id': config.entities[i], 'delay': 0};
+      }
+    }
+
     this._config = config;
   }
 
@@ -32,103 +36,68 @@ class VasttrafikCard extends LitElement {
   }
 
   verifyEntities() {
-    this._config.entities.forEach(entityId => {
-      const attribution = this._hass.states[entityId].attributes.attribution;
+    this._config.entities
+      .filter(entity => !!this._hass.states[entity.id])
+      .forEach(entity => {
+        const attribution = this._hass.states[entity.id].attributes.attribution;
 
-      if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
-        console.warn(`WARNING: ${entityId} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
-      }
-    });
+        if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
+          console.warn(`WARNING: ${entity.id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
+        }
+      });
   }
 
   createCardTemplates() {
-    if (this._config.groupBy) {
-      const titleFunction = this._config.groupBy === 'from' ? 
-                              entityId => this._hass.states[entityId].attributes.from :
-                              entityId => this._hass.states[entityId].attributes.to;
+    this._config.entities
+      .filter(entity => !!this._hass.states[entity.id])
+      .forEach(entity => entity['departureTime'] = this._hass.states[entity.id].state);
 
-      const sortedEntityObject = this.getEntityIdsByTitle(titleFunction);
-      this._config.cardTemplates = Object.keys(sortedEntityObject)
-                                    .map(title => {
-                                      return {
-                                        'title': title,
-                                        'entityIds': sortedEntityObject[title],
-                                      }; 
-                                    });
-    } else {
-      this._config.cardTemplates = [{
-        title: this.getValidTitle(null),
-        entityIds: this._config.entities,
-      }];
-    }
-  }
-
-  getEntityIdsByTitle(titleFunction) {
-    return this._config.entities.reduce((obj, entityId) => {
-        const title = this.getValidTitle(titleFunction(entityId));
-        if (!obj.hasOwnProperty(title)) {
-          obj[title] = []
-        }
-        obj[title].push(entityId);
-        return obj;
-      }, {});
-  }
-
-  getValidTitle(wantedTitle) {
-    return wantedTitle || this._config.title || 'Västtrafik';
+    this._config.entities.sort((a,b) => this.getTimeUntil(a) - this.getTimeUntil(b));
   }
 
   render() {
-    const cardTemplates = this._config.cardTemplates.map(cardTemplate => this.renderCardTemplate(cardTemplate));
+    const title = this._config.title || 'Västtrafik';
+    const renderedEntities = this._config.entities.map(entity => this.renderEntity(entity));
 
     return html`
       <link type="text/css" rel="stylesheet" href="/community_plugin/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
       <ha-card>
+        <div class="card-header">
+          ${title}
+        </div>
         <div>
-          ${cardTemplates}
+          <table>
+            <tr>
+              <th align="left"></th>
+              <th align="left">Time</th>
+              <th align="left">From</th>
+              <th align="left">Leave home</th>
+            </tr>
+            ${renderedEntities}
+          </table>
         </div>
       </ha-card>`;
   }
 
-  renderCardTemplate(cardTemplate) {
-    return html`
-        <div class="card-header">
-          ${cardTemplate.title}
-        </div>
-        <table>
-          ${cardTemplate.entityIds.map(entityId => this.renderEntity(entityId))}
-        </table>`;
-  }
-
-  renderEntity(entityId) {
-    if (!(entityId in this._hass.states)) {
+  renderEntity(entity) {
+    if (!(entity.id in this._hass.states)) {
        return;
     }
 
-    const entity = this._hass.states[entityId];
-    const attributes = entity.attributes;
+    const hassEntity = this._hass.states[entity.id];
+    const attributes = hassEntity.attributes;
+
     const line = attributes.line;
     const lineClass = this.getLineClass(line);
-    const direction = attributes.direction;
-    const track = attributes.track;
-    const departureTime = entity.state;
-    const accessibilityIcon = attributes.accessibility === 'wheelChair' ? 'mdi:wheelchair-accessibility' : '';
-    const timeUntilDeparture = this.getTimeUntil(departureTime);
+    const departureTime = hassEntity.state;
+    const timeUntilLeave = this.getTimeUntil(entity);
     const from = attributes.from || '';
-    const to = attributes.to || '';
-
-    const shouldDisplayFrom = this._config.groupBy && this._config.groupBy !== 'from';
-    const shouldDisplayTo = this._config.groupBy && this._config.groupBy !== 'to';
 
     return html`<tr>
               <td class="${lineClass} line">${line}</td>
-              <td>${direction}</td>
-              <td>${timeUntilDeparture} minutes</td>
               <td>${departureTime}</td>
-              <td>${track}</td>
-              <td><ha-icon icon="${accessibilityIcon}"></ha-icon></td>
-              ${shouldDisplayFrom ? html`<td>${from}</td>`: html``}
-              ${shouldDisplayTo ? html`<td>${to}</td>`: html``}
+              <td>${from}</td>
+              <td>${timeUntilLeave} minutes</td>
             </tr>`;
   }
 
@@ -145,11 +114,11 @@ class VasttrafikCard extends LitElement {
     }
   }
 
-  getTimeUntil(hhmm) {
+  getTimeUntil(entity) {
     const now = new Date();
     const nowHour = now.getHours();
     const nowMinute = now.getMinutes();
-    const expectedTime = hhmm.split(':');
+    const expectedTime = entity.departureTime.split(':');
     const expectedHour = parseInt(expectedTime[0]);
     const expectedMinute = parseInt(expectedTime[1]);
     let hourDiff = expectedHour < nowHour ? 24+(expectedHour-nowHour) : expectedHour-nowHour;
@@ -159,7 +128,7 @@ class VasttrafikCard extends LitElement {
       hourDiff--;
     }
 
-    return hourDiff*60 + minuteDiff;
+    return hourDiff*60 + minuteDiff - entity.delay;
   }
 }
-customElements.define('vasttrafik-card', VasttrafikCard);
+customElements.define('vasttrafik-leave-card', VasttrafikLeaveCard);
