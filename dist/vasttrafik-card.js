@@ -1,4 +1,4 @@
-class VasttrafikLeaveCard extends LitElement {
+class VasttrafikCard extends LitElement {
   static get properties() {
     return {
       _config: {
@@ -131,4 +131,4 @@ class VasttrafikLeaveCard extends LitElement {
     return hourDiff*60 + minuteDiff - entity.delay;
   }
 }
-customElements.define('vasttrafik-leave-card', VasttrafikLeaveCard);
+customElements.define('vasttrafik-card', VasttrafikCard);
