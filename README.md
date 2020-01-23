@@ -44,7 +44,7 @@ entities:
   - sensor.godhemsgatan_till_brunnsparken
 ```
 
-![Example 1](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/1.png)
+![Example 1](https://raw.githubusercontent.com/Miicroo/lovelace-vasttrafik-card/master/resources/1.png)
 
 ## Tram and bus styles
 ![Colours for each tram or bus line](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/colours.png)
