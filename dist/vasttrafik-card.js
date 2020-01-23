@@ -1,3 +1,6 @@
+const LitElement = Object.getPrototypeOf(customElements.get("hui-view"));
+const html = LitElement.prototype.html;
+
 class VasttrafikCard extends LitElement {
   static get properties() {
     return {
