@@ -18,15 +18,15 @@ class VasttrafikCard extends LitElement {
       throw new Error("Specify at least one entity!");
     }
 
-    for(let i = 0; i<config.entities.length; i++) {
-      if (typeof config.entities[i] === 'string') {
-        config.entities[i] = {'id': config.entities[i], 'delay': 0};
+    const entities = config.entities.map(entity => {
+      if (typeof entity === 'string') {
+        return {'id': entity, 'delay': 0};
       } else {
-        config.entities[i] = {'id': config.entities[i].id, 'delay': config.entities[i].delay};
+        return Object.assign({}, entity);
       }
-    }
+    });
 
-    this._config = config;
+    this._config = Object.assign({}, {'entities': entities}, config);
   }
 
   set hass(hass) {
