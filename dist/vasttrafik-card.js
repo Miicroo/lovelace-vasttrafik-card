@@ -18,15 +18,13 @@ class VasttrafikCard extends LitElement {
       throw new Error("Specify at least one entity!");
     }
 
-    const entities = config.entities.map(entity => {
-      if (typeof entity === 'string') {
-        return {'id': entity, 'delay': 0, 'departureTime': '00:00'};
-      } else {
-        return Object.assign({}, {'departureTime': '00:00'}, entity);
+    for(let i = 0; i<config.entities.length; i++) {
+      if (typeof config.entities[i] === 'string') {
+        config.entities[i] = {'id': config.entities[i], 'delay': 0};
       }
-    });
+    }
 
-    this._config = Object.assign({}, {'entities': entities}, config);
+    this._config = config;
   }
 
   set hass(hass) {
@@ -53,9 +51,9 @@ class VasttrafikCard extends LitElement {
   }
 
   createCardTemplates() {
-    this._config.entities
+    const newEntities = this._config.entities
       .filter(entity => !!this._hass.states[entity.id])
-      .forEach(entity => entity['departureTime'] = this._hass.states[entity.id].state);
+      .map(entity => Object.assign({}, {'departureTime': this._hass.states[entity.id].state}, entity));
 
     this._config.entities.sort((a,b) => this.getTimeUntil(a) - this.getTimeUntil(b));
   }
