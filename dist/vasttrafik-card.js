@@ -19,8 +19,8 @@ class VasttrafikCard extends LitElement {
     }
 
     const entities = config.entities.map(entity => {
-      if (typeof config.entities[i] === 'string') {
-        return {'id': config.entities[i], 'delay': 0};
+      if (typeof entity === 'string') {
+        return {'id': entity, 'delay': 0};
       } else {
         return Object.assign({}, entity);
       }
