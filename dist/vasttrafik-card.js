@@ -22,7 +22,7 @@ class VasttrafikCard extends LitElement {
       if (typeof config.entities[i] === 'string') {
         config.entities[i] = {'id': config.entities[i], 'delay': 0};
       } else {
-        config.entities[i] = { ...config.entities[i] };
+        config.entities[i] = {'id': config.entities[i].id, 'delay': config.entities[i].delay};
       }
     }
 
