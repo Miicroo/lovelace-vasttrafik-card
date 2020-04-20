@@ -20,7 +20,9 @@ class VasttrafikCard extends LitElement {
 
     for(let i = 0; i<config.entities.length; i++) {
       if (typeof config.entities[i] === 'string') {
-        config.entities[i] = {'id': config.entities[i], 'delay': 0, 'departureTime': '00:00'};
+        config.entities[i] = {'id': config.entities[i], 'delay': 0};
+      } else {
+        config.entities[i] = { ...config.entities[i] };
       }
     }
 
