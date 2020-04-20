@@ -18,7 +18,7 @@ class VasttrafikCard extends LitElement {
       throw new Error("Specify at least one entity!");
     }
 
-    const entities = config.entities.splice().map(entity => {
+    const entities = config.entities.map(entity => {
       if (typeof config.entities[i] === 'string') {
         return {'id': config.entities[i], 'delay': 0};
       } else {
