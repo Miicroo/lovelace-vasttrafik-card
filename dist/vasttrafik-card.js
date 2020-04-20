@@ -51,16 +51,16 @@ class VasttrafikCard extends LitElement {
   }
 
   createCardTemplates() {
-    const newEntities = this._config.entities
+    this._entities = this._config.entities
       .filter(entity => !!this._hass.states[entity.id])
       .map(entity => Object.assign({}, {'departureTime': this._hass.states[entity.id].state}, entity));
 
-    this._config.entities.sort((a,b) => this.getTimeUntil(a) - this.getTimeUntil(b));
+    this._entities.sort((a,b) => this.getTimeUntil(a) - this.getTimeUntil(b));
   }
 
   render() {
     const title = this._config.title || 'Västtrafik';
-    const renderedEntities = this._config.entities.map(entity => this.renderEntity(entity));
+    const renderedEntities = this._entities.map(entity => this.renderEntity(entity));
 
     return html`
       <link type="text/css" rel="stylesheet" href="/community_plugin/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
