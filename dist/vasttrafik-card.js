@@ -20,9 +20,9 @@ class VasttrafikCard extends LitElement {
 
     const entities = config.entities.map(entity => {
       if (typeof entity === 'string') {
-        return {'id': entity, 'delay': 0};
+        return {'id': entity, 'delay': 0, 'departureTime': '00:00'};
       } else {
-        return Object.assign({}, entity);
+        return Object.assign({}, {'departureTime': '00:00'}, entity);
       }
     });
 
