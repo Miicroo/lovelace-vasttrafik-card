@@ -18,13 +18,13 @@ class VasttrafikCard extends LitElement {
       throw new Error("Specify at least one entity!");
     }
 
+    this._config = config;
+
     for(let i = 0; i<config.entities.length; i++) {
       if (typeof config.entities[i] === 'string') {
-        config.entities[i] = {'id': config.entities[i], 'delay': 0};
+        this._config.entities[i] = {'id': config.entities[i], 'delay': 0};
       }
     }
-
-    this._config = config;
   }
 
   set hass(hass) {
