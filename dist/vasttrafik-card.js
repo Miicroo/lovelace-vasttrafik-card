@@ -18,7 +18,7 @@ class VasttrafikCard extends LitElement {
       throw new Error("Specify at least one entity!");
     }
 
-    const entities = config.entities.map(entity => {
+    this._entities = config.entities.map(entity => {
       if (typeof entity === 'string') {
         return {'id': entity, 'delay': 0};
       } else {
@@ -27,7 +27,6 @@ class VasttrafikCard extends LitElement {
     });
 
     this._config = config;
-    this._config.entities = entities;
   }
 
   set hass(hass) {
@@ -42,7 +41,7 @@ class VasttrafikCard extends LitElement {
   }
 
   verifyEntities() {
-    this._config.entities
+    this._entities
       .filter(entity => !!this._hass.states[entity.id])
       .forEach(entity => {
         const attribution = this._hass.states[entity.id].attributes.attribution;
@@ -54,7 +53,7 @@ class VasttrafikCard extends LitElement {
   }
 
   createCardTemplates() {
-    this._entities = this._config.entities
+    this._entities = this._entities
       .filter(entity => !!this._hass.states[entity.id])
       .map(entity => Object.assign({}, {'departureTime': this._hass.states[entity.id].state}, entity));
 
