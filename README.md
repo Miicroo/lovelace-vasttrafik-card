@@ -37,7 +37,7 @@ Entities can be defined in 3 different ways:
 ## Examples
 ```yaml
 type: 'custom:vasttrafik-card'
-title: 'To Valand'
+title: 'Mot Brunnsparken'
 entities:
   - id: sensor.ekedal_till_brunnsparken
     delay: 3
