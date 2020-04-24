@@ -11,7 +11,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         setConfig(config) {
-            this.title = this.config.title || 'Västtrafik';
+            this.title = config.title || 'Västtrafik';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
         }
