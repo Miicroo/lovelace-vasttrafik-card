@@ -22,6 +22,7 @@ const css = LitElement.prototype.css;
 export class VasttrafikCardEditor extends LitElement {
     setConfig(config) {
         this._config = config;
+        console.log(config);
     }
 
     static get properties() {
@@ -45,13 +46,12 @@ export class VasttrafikCardEditor extends LitElement {
             (eid) => {
                 const state = this.hass.states[eid];
                 const attribution = state.attributes.attribution;
-                console.log(eid);
-                console.log(attribution);
                 return !!attribution && attribution.toLowerCase().includes('västtrafik');
             }
         );
 
         return html`
+        <ha-card>
       <div class="card-config">
         <div>
           <paper-input
@@ -95,6 +95,7 @@ export class VasttrafikCardEditor extends LitElement {
           </div>
         </div>
       </div>
+        </ha-card>
     `;
     }
 
