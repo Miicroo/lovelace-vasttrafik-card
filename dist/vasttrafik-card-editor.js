@@ -101,7 +101,7 @@ export class VasttrafikCardEditor extends LitElement {
     if (target.value === "") {
       return;
     }
-    const newConfigEntities = this.entities!.concat({
+    const newConfigEntities = this.entities.concat({
       entity: target.value as string,
     });
     target.value = "";
