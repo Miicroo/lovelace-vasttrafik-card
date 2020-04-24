@@ -3,6 +3,11 @@ customElements.whenDefined('card-tools').then(() => {
 
     class VasttrafikCard extends ct.LitElement {
 
+	static async getConfigElement() {
+            await import("./vasttrafik-card-editor.js");
+            return document.createElement("vasttrafik-card-editor");
+        }
+	
         static get properties() {
             return {
                 config: {},
