@@ -61,7 +61,7 @@ export class VasttrafikCardEditor extends LitElement {
             @value-changed="${this._valueChanged}"
           ></paper-input>
           <div class="entities">
-            ${this._entities().map((entityConf, index) => {
+            ${this._entities.map((entityConf, index) => {
             return html`
                 <div class="entity">
                   <ha-entity-picker
@@ -76,7 +76,7 @@ export class VasttrafikCardEditor extends LitElement {
                     icon="hass:arrow-down"
                     .index="${index}"
                     @click="${this._entityDown}"
-                    ?disabled="${index === this._entities().length - 1}"
+                    ?disabled="${index === this._entities.length - 1}"
                   ></paper-icon-button>
                   <paper-icon-button
                     title="Move entity up"
