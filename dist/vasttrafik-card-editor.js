@@ -45,6 +45,8 @@ export class VasttrafikCardEditor extends LitElement {
             (eid) => {
                 const state = this.hass.states[eid];
                 const attribution = state.attributes.attribution;
+                console.log(eid);
+                console.log(attribution);
                 return !!attribution && attribution.toLowerCase().includes('västtrafik');
             }
         );
