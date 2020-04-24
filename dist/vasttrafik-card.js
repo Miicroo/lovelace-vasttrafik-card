@@ -14,6 +14,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.title = config.title || 'Västtrafik';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
+	    console.log(this.hass);
         }
 
         _parseEntities(configuredEntities) {
@@ -26,14 +27,14 @@ customElements.whenDefined('card-tools').then(() => {
             });
         }
 
-        set hass(hass) {
+        /*set hass(hass) {
             this.hass = hass;
 
             if (!this.isVerified) {
                 this._verifyEntities();
                 this.isVerified = true;
             }
-        }
+        }*/
 
         _verifyEntities() {
             this.entities
