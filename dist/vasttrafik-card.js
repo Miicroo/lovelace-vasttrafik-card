@@ -14,7 +14,6 @@ customElements.whenDefined('card-tools').then(() => {
             this.title = config.title || 'Västtrafik';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
-	    console.log(this.hass);
         }
 
         _parseEntities(configuredEntities) {
@@ -27,28 +26,12 @@ customElements.whenDefined('card-tools').then(() => {
             });
         }
 
-        /*set hass(hass) {
-            this.hass = hass;
-
-            if (!this.isVerified) {
+        render() {
+	    if (!this.isVerified) {
                 this._verifyEntities();
                 this.isVerified = true;
             }
-        }*/
-
-        _verifyEntities() {
-            this.entities
-                .filter(entity => !!this.hass.states[entity.id])
-                .forEach(entity => {
-                    const attribution = this.hass.states[entity.id].attributes.attribution;
-
-                    if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
-                        console.warn(`WARNING: ${entity.id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
-                    }
-                });
-        }
-
-        render() {
+	    
             this._sortEntities();
             const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
 
@@ -70,6 +53,18 @@ customElements.whenDefined('card-tools').then(() => {
 	                    </table>
 	                </div>
 	            </ha-card>`;
+        }
+	
+        _verifyEntities() {
+            this.entities
+                .filter(entity => !!this.hass.states[entity.id])
+                .forEach(entity => {
+                    const attribution = this.hass.states[entity.id].attributes.attribution;
+
+                    if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
+                        console.warn(`WARNING: ${entity.id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
+                    }
+                });
         }
 
         _sortEntities() {
