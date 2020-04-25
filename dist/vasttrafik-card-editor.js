@@ -62,11 +62,13 @@ export class VasttrafikCardEditor extends LitElement {
           ></paper-input>
           <div class="entities">
             ${this._entities.map((entityConf, index) => {
+            console.log(entityConf);
+            const entityId = entityConf.id || entityConf;
             return html`
                 <div class="entity">
                   <ha-entity-picker
                     .hass="${this.hass}"
-                    .value="${entityConf.entity}"
+                    .value="${entityId}"
                     .index="${index}"
                     @change="${this._valueChanged}"
                     allow-custom-entity
