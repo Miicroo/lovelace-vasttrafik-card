@@ -22,7 +22,6 @@ const css = LitElement.prototype.css;
 export class VasttrafikCardEditor extends LitElement {
     setConfig(config) {
         this._config = config;
-        console.log(config);
     }
 
     static get properties() {
