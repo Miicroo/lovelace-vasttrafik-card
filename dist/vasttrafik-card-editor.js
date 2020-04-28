@@ -86,7 +86,6 @@ customElements.whenDefined('card-tools').then(() => {
                                                 .configValue='${entityId}'
                                                 .index='${index}'
                                                 @change='${this._valueChanged}'>
-                                                allow-custom-entity
                                             </ha-entity-picker>
                                             <paper-input
                                                 id='year'
