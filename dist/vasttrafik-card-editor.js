@@ -14,8 +14,8 @@ const fireEvent = (node, type, detail, options) => {
 customElements.whenDefined('card-tools').then(() => {
     const ct = customElements.get('card-tools');
 
-    class VasttrafikCardEditor extends ct.LitElement {
-        
+    export class VasttrafikCardEditor extends ct.LitElement {
+
         static get properties() {
             return {
                 hass: {},
@@ -31,12 +31,12 @@ customElements.whenDefined('card-tools').then(() => {
 
         _parseEntities(configuredEntities) {
             return configuredEntities.map(entity => {
-                    if (typeof entity === 'string') {
-                        return {'id': entity, 'delay': 0};
-                    } else {
-                        return Object.assign({}, entity);
-                    }
-                });
+                if (typeof entity === 'string') {
+                    return {'id': entity, 'delay': 0};
+                } else {
+                    return Object.assign({}, entity);
+                }
+            });
         }
 
         get _entities() {
@@ -49,7 +49,7 @@ customElements.whenDefined('card-tools').then(() => {
 
         render() {
             if (!this.hass) {
-                return html``;
+                return ct.LitHtml``;
             }
 
             const allowedEntities = Object.keys(this.hass.states).filter(
@@ -60,7 +60,7 @@ customElements.whenDefined('card-tools').then(() => {
                 }
             );
 
-            return html`
+            return ct.LitHtml`
                     <div class='card-config'>
                         <div>
                             <paper-input
@@ -71,14 +71,14 @@ customElements.whenDefined('card-tools').then(() => {
                             </paper-input>
                             <div class='entities'>
                                 ${this._entities.map((entityConf, index) => {
-                                    const entityId = entityConf.id || entityConf;
-                                    const entityDelay = entityConf.delay || 0;
+                const entityId = entityConf.id || entityConf;
+                const entityDelay = entityConf.delay || 0;
 
-                                    console.log(entityConf);
-                                    console.log(entityId);
-                                    console.log(entityDelay);
+                console.log(entityConf);
+                console.log(entityId);
+                console.log(entityDelay);
 
-                                    return html`
+                return ct.LitHtml`
                                         <div class='entity'>
                                             <ha-entity-picker
                                                 .hass='${this.hass}'
@@ -117,7 +117,7 @@ customElements.whenDefined('card-tools').then(() => {
                                             </paper-icon-button>
                                         </div>
                                     `;
-                                })}
+            })}
 
                                 <ha-entity-picker
                                     .hass='${this.hass}'
@@ -212,10 +212,10 @@ customElements.whenDefined('card-tools').then(() => {
 });
 
 setTimeout(() => {
-    if(!customElements.get('card-tools')) {
+    if (!customElements.get('card-tools')) {
         customElements.define('vasttrafik-card-editor', class extends HTMLElement {
             setConfig() {
-                throw new Error('Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools');
+                throw new Error('Cant find card-tools. See https://github.com/thomasloven/lovelace-card-tools');
             }
         });
     }
