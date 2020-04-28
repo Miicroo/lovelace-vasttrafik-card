@@ -14,7 +14,7 @@ const fireEvent = (node, type, detail, options) => {
 customElements.whenDefined('card-tools').then(() => {
     const ct = customElements.get('card-tools');
 
-    export class VasttrafikCardEditor extends ct.LitElement {
+    class VasttrafikCardEditor extends ct.LitElement {
 
         static get properties() {
             return {
