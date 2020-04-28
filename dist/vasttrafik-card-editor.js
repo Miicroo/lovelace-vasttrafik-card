@@ -24,7 +24,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         setConfig(config) {
-            this.title = this.config.title;
+            this.title = config.title;
             this.entities = this._parseEntities(config.entities);
             this.config = config;
         }
