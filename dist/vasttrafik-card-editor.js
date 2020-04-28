@@ -11,167 +11,212 @@ const fireEvent = (node, type, detail, options) => {
     return event;
 };
 
-if (!customElements.get("ha-switch") && customElements.get("paper-toggle-button")) {
-    customElements.define("ha-switch", customElements.get("paper-toggle-button"));
-}
+customElements.whenDefined('card-tools').then(() => {
+    const ct = customElements.get('card-tools');
 
-const LitElement = Object.getPrototypeOf(customElements.get("hui-view"));
-const html = LitElement.prototype.html;
-const css = LitElement.prototype.css;
-
-export class VasttrafikCardEditor extends LitElement {
-    setConfig(config) {
-        this._config = config;
-    }
-
-    static get properties() {
-        return {hass: {}, _config: {}};
-    }
-
-    get _entities() {
-        return this._config.entities || [];
-    }
-
-    get _title() {
-        return this._config.title || "";
-    }
-
-    render() {
-        if (!this.hass) {
-            return html``;
+    export class VasttrafikCardEditor extends ct.LitElement {
+        
+        static get properties() {
+            return {
+                hass: {},
+                config: {}
+            };
         }
 
-        const entities = Object.keys(this.hass.states).filter(
-            (eid) => {
-                const state = this.hass.states[eid];
-                const attribution = state.attributes.attribution;
-                return !!attribution && attribution.toLowerCase().includes('västtrafik');
-            }
-        );
+        setConfig(config) {
+            this.title = this.config.title;
+            this.entities = this._parseEntities(config.entities);
+            this.config = config;
+        }
 
-        return html`
-        <ha-card>
-      <div class="card-config">
-        <div>
-          <paper-input
-            label="Title"
-            .value="${this._title}"
-            .configValue="${"title"}"
-            @value-changed="${this._valueChanged}"
-          ></paper-input>
-          <div class="entities">
-            ${this._entities.map((entityConf, index) => {
-            console.log(entityConf);
-            const entityId = entityConf.id || entityConf;
+        _parseEntities(configuredEntities) {
+            return configuredEntities.map(entity => {
+                    if (typeof entity === 'string') {
+                        return {'id': entity, 'delay': 0};
+                    } else {
+                        return Object.assign({}, entity);
+                    }
+                });
+        }
+
+        get _entities() {
+            return this.entities || [];
+        }
+
+        get _title() {
+            return this.title || '';
+        }
+
+        render() {
+            if (!this.hass) {
+                return html``;
+            }
+
+            const allowedEntities = Object.keys(this.hass.states).filter(
+                (eid) => {
+                    const state = this.hass.states[eid];
+                    const attribution = state.attributes.attribution;
+                    return !!attribution && attribution.toLowerCase().includes('västtrafik');
+                }
+            );
+
             return html`
-                <div class="entity">
-                  <ha-entity-picker
-                    .hass="${this.hass}"
-                    .value="${entityId}"
-                    .index="${index}"
-                    @change="${this._valueChanged}"
-                    allow-custom-entity
-                  ></ha-entity-picker>
-                  <paper-icon-button
-                    title="Move entity down"
-                    icon="hass:arrow-down"
-                    .index="${index}"
-                    @click="${this._entityDown}"
-                    ?disabled="${index === this._entities.length - 1}"
-                  ></paper-icon-button>
-                  <paper-icon-button
-                    title="Move entity up"
-                    icon="hass:arrow-up"
-                    .index="${index}"
-                    @click="${this._entityUp}"
-                    ?disabled="${index === 0}"
-                  ></paper-icon-button>
-                </div>
-              `;
-        })}
-            <ha-entity-picker
-              .hass="${this.hass}"
-              @change="${this._addEntity}"
-            ></ha-entity-picker>
-          </div>
-        </div>
-      </div>
-        </ha-card>
-    `;
-    }
+                    <div class='card-config'>
+                        <div>
+                            <paper-input
+                                label='Title'
+                                .value='${this._title}'
+                                .configValue='${'title'}'
+                                @value-changed='${this._valueChanged}'>
+                            </paper-input>
+                            <div class='entities'>
+                                ${this._entities.map((entityConf, index) => {
+                                    const entityId = entityConf.id || entityConf;
+                                    const entityDelay = entityConf.delay || 0;
 
-    _addEntity(ev) {
-        const target = ev.target;
-        if (target.value === "") {
-            return;
+                                    console.log(entityConf);
+                                    console.log(entityId);
+                                    console.log(entityDelay);
+
+                                    return html`
+                                        <div class='entity'>
+                                            <ha-entity-picker
+                                                .hass='${this.hass}'
+                                                .value='${entityId}'
+                                                .configValue='${entityId}'
+                                                .index='${index}'
+                                                @change='${this._valueChanged}'>
+                                                allow-custom-entity
+                                            </ha-entity-picker>
+                                            <paper-input
+                                                id='year'
+                                                type='number'
+                                                no-label-float=''
+                                                maxlength='4'
+                                                max='9999'
+                                                min='0'
+                                                auto-validate='true'
+                                                value='${entityDelay}'
+                                                style='width: 50px;'
+                                                @click='${(ev) => ev.stopPropagation()}'
+                                                @change='${this.valueChanged}'>
+                                            </paper-input>
+                                            <paper-icon-button
+                                                title='Move entity down'
+                                                icon='hass:arrow-down'
+                                                .index='${index}'
+                                                @click='${this._entityDown}'
+                                                ?disabled='${index === this._entities.length - 1}'>
+                                            </paper-icon-button>
+                                            <paper-icon-button
+                                                title='Move entity up'
+                                                icon='hass:arrow-up'
+                                                .index='${index}'
+                                                @click='${this._entityUp}'
+                                                ?disabled='${index === 0}'>
+                                            </paper-icon-button>
+                                        </div>
+                                    `;
+                                })}
+
+                                <ha-entity-picker
+                                    .hass='${this.hass}'
+                                    @change='${this._addEntity}'>
+                                </ha-entity-picker>
+                            </div>
+                        </div>
+                    </div>
+                `;
         }
-        const newConfigEntities = this.entities.concat({
-            entity: target.value,
-        });
-        target.value = "";
-        fireEvent(this, "entities-changed", {entities: newConfigEntities});
-    }
 
-    _entityUp(ev) {
-        const target = ev.target;
-        const newEntities = this.entities.concat();
-
-        [newEntities[target.index - 1], newEntities[target.index]] = [
-            newEntities[target.index],
-            newEntities[target.index - 1],
-        ];
-
-        fireEvent(this, "entities-changed", {entities: newEntities});
-    }
-
-    _entityDown(ev) {
-        const target = ev.target;
-        const newEntities = this.entities.concat();
-
-        [newEntities[target.index + 1], newEntities[target.index]] = [
-            newEntities[target.index],
-            newEntities[target.index + 1],
-        ];
-
-        fireEvent(this, "entities-changed", {entities: newEntities});
-    }
-
-    _valueChanged(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        if (this[`_${target.configValue}`] === target.value) {
-            return;
-        }
-        if (target.configValue) {
-            if (target.value === "") {
-                delete this._config[target.configValue];
-            } else {
-                this._config = {
-                    ...this._config,
-                    [target.configValue]:
-                        target.checked !== undefined ? target.checked : target.value,
-                };
+        _addEntity(ev) {
+            const target = ev.target;
+            if (target.value === '') {
+                return;
             }
+
+            const newConfigEntities = this.entities.concat({
+                id: target.value,
+                delay: 0
+            });
+            target.value = '';
+
+            fireEvent(this, 'entities-changed', {entities: newConfigEntities});
         }
-        fireEvent(this, "config-changed", {config: this._config});
+
+        _entityUp(ev) {
+            const target = ev.target;
+            const newEntities = this.entities.concat();
+
+            [newEntities[target.index - 1], newEntities[target.index]] = [
+                newEntities[target.index],
+                newEntities[target.index - 1],
+            ];
+
+            fireEvent(this, 'entities-changed', {entities: newEntities});
+        }
+
+        _entityDown(ev) {
+            const target = ev.target;
+            const newEntities = this.entities.concat();
+
+            [newEntities[target.index + 1], newEntities[target.index]] = [
+                newEntities[target.index],
+                newEntities[target.index + 1],
+            ];
+
+            fireEvent(this, 'entities-changed', {entities: newEntities});
+        }
+
+        _valueChanged(ev) {
+            if (!this.config || !this.hass) {
+                return;
+            }
+
+            const target = ev.target;
+            if (this[`_${target.configValue}`] === target.value) {
+                return;
+            }
+
+            if (target.configValue) {
+                if (target.value === '') {
+                    delete this.config[target.configValue];
+                } else {
+                    this.config = {
+                        ...this.config,
+                        [target.configValue]: target.checked !== undefined ? target.checked : target.value,
+                    };
+                }
+            }
+
+            fireEvent(this, 'config-changed', {config: this.config});
+        }
+
+        static get styles() {
+            return ct.LitCSS`
+                .entities {
+                    padding-left: 20px;
+                }
+                .entity {
+                    display: flex;
+                    align-items: flex-end;
+                }
+                .entity ha-entity-picker {
+                    flex-grow: 1;
+                }
+            `;
+        }
     }
 
-    static get styles() {
-        return css`
-      .entities {
-        padding-left: 20px;
-      }
-      .entity {
-        display: flex;
-        align-items: flex-end;
-      }
-      .entity ha-entity-picker {
-        flex-grow: 1;
-      }
-    `;
-    }
-}
+    customElements.define('vasttrafik-card-editor', VasttrafikCardEditor);
+});
 
-customElements.define("vasttrafik-card-editor", VasttrafikCardEditor);
+setTimeout(() => {
+    if(!customElements.get('card-tools')) {
+        customElements.define('vasttrafik-card-editor', class extends HTMLElement {
+            setConfig() {
+                throw new Error('Can't find card-tools. See https://github.com/thomasloven/lovelace-card-tools');
+            }
+        });
+    }
+}, 2000);
