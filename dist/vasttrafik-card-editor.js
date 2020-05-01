@@ -24,9 +24,34 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         setConfig(config) {
-            this.title = config.title;
+            this._config = Object.assign({}, config);
+
+            this.title = this._config.title;
             this.entities = this._parseEntities(config.entities);
-            this.config = config;
+
+            const valueOptions = {
+                icon: 'numeric',
+                name: 'Settings',
+                secondary: 'Value settings.',
+                show: false,
+            };
+            const entityOptions = {
+                show: false,
+                options: {
+                    value: Object.assign({}, valueOptions),
+                },
+            };
+
+            this._entityOptionsArray = []; // TODO maybe move out, like to constructor?
+            for (const config of this.entities) {
+                this._entityOptionsArray.push(Object.assign({}, entityOptions));
+            }
+
+            if (!this._options) {
+                this._options = {
+                    entities: this._entityOptionsArray,
+                };
+            }
         }
 
         _parseEntities(configuredEntities) {
@@ -47,7 +72,7 @@ customElements.whenDefined('card-tools').then(() => {
             return this.title || '';
         }
 
-        
+
     render() {
         return ct.LitHtml `
           <div class="card-config">
