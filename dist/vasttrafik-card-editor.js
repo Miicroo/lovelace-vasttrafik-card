@@ -100,7 +100,7 @@ customElements.whenDefined('card-tools').then(() => {
                     mini
                     icon="mdi:plus"
                     @click=${this._addEntity}
-                    .configArray=${this._configArray}
+                    .configArray=${this.entities}
                     .configAddValue=${'entity'}
                     .sourceArray=${this._config.entities}
                   ></ha-fab>
@@ -176,7 +176,7 @@ customElements.whenDefined('card-tools').then(() => {
                         : ct.LitHtml `
                         <ha-icon icon="mdi:arrow-up" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
                       `}
-                  ${index !== this._configArray.length - 1
+                  ${index !== this.entities.length - 1
                         ? ct.LitHtml `
                         <ha-icon
                           class="ha-icon-large"
@@ -319,7 +319,7 @@ customElements.whenDefined('card-tools').then(() => {
         const target = ev.target;
         const entitiesArray = [];
         let index = 0;
-        for (const config of this._configArray) {
+        for (const config of this.entities) {
             if (target.configIndex !== index) {
                 entitiesArray.push(config);
             }
@@ -353,7 +353,7 @@ customElements.whenDefined('card-tools').then(() => {
                 target.configObject[target.configAttribute] = target.value;
             }
         }
-        this._config.entities = this._configArray;
+        this._config.entities = this.entities;
         fireEvent(this, 'config-changed', { config: this._config });
     }
 
