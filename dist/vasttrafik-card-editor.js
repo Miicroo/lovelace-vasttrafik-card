@@ -154,7 +154,7 @@ customElements.whenDefined('card-tools').then(() => {
                       >
                         ${entities.map(entity => {
                         return ct.LitHtml `
-                            <paper-item>${entity.id}</paper-item>
+                            <paper-item>${entity}</paper-item>
                           `;
                     })}
                       </paper-listbox>
