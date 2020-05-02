@@ -80,7 +80,7 @@ customElements.whenDefined('card-tools').then(() => {
             <paper-input
                 label='Title'
                 .value='${this._title}'
-                .configValue='${'title'}'
+                .configObject='${'title'}'
                 @value-changed='${this._valueChanged}'>
             </paper-input>
 
@@ -515,6 +515,67 @@ customElements.whenDefined('card-tools').then(() => {
                 }
                 .entity ha-entity-picker {
                     flex-grow: 1;
+                }
+
+                .option {
+                    padding: 4px 0px;
+                    cursor: pointer;
+                }
+                .options {
+                    background: var(--primary-background-color);
+                    border-radius: var(--ha-card-border-radius);
+                    cursor: pointer;
+                    padding: 8px;
+                }
+                .sub-category {
+                    cursor: pointer;
+                }
+                .row {
+                    display: flex;
+                    margin-bottom: -14px;
+                    pointer-events: none;
+                    margin-top: 14px;
+                }
+                .title {
+                    padding-left: 16px;
+                    margin-top: -6px;
+                    pointer-events: none;
+                }
+                .secondary {
+                    padding-left: 40px;
+                    color: var(--secondary-text-color);
+                    pointer-events: none;
+                }
+                .value {
+                    padding: 0px 8px;
+                }
+                .value-container {
+                    padding: 0px 8px;
+                    transition: all 0.5s ease-in-out;
+                }
+                .value-container:target {
+                    height: 50px;
+                }
+                .value-number {
+                    width: 100px;
+                }
+                ha-fab {
+                    margin: 8px;
+                }
+                ha-switch {
+                    padding: 16px 0;
+                }
+                .card-background {
+                    background: var(--paper-card-background-color);
+                    border-radius: var(--ha-card-border-radius);
+                    padding: 8px;
+                }
+                .category {
+                    background: #0000;
+                }
+                .ha-icon-large {
+                    cursor: pointer;
+                    margin: 0px 4px;
                 }
             `;
         }
