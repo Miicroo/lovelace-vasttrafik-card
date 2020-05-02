@@ -156,8 +156,9 @@ customElements.whenDefined('card-tools').then(() => {
                         fallback-selection="0"
                       >
                         ${entities.map(entity => {
+                console.log(entity);
                         return ct.LitHtml `
-                            <paper-item>${entity.id}</paper-item>
+                            <paper-item>${entity}</paper-item>
                           `;
                     })}
                       </paper-listbox>
