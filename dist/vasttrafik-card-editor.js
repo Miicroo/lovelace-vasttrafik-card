@@ -116,8 +116,11 @@ customElements.whenDefined('card-tools').then(() => {
         const options = this._options.entities;
         const entities = this._availableEntities();
         const valueElementArray = [];
+            console.log(this.entities);
         for (const entity of this.entities) {
             const index = this.entities.indexOf(entity);
+            console.log(entity);
+            console.log(index);
             valueElementArray.push(ct.LitHtml `
                 <div class="sub-category" style="display: flex; flex-direction: row; align-items: center;">
                   <div style="display: flex; align-items: center; flex-direction: column;">
@@ -142,7 +145,7 @@ customElements.whenDefined('card-tools').then(() => {
                     <paper-dropdown-menu
                       label="Entity"
                       @value-changed=${this._valueChanged}
-                      .configAttribute=${'entity'}
+                      .configAttribute=${'id'}
                       .configObject=${this.entities[index]}
                       .ignoreNull=${true}
                       style="width: 100%;"
@@ -154,7 +157,7 @@ customElements.whenDefined('card-tools').then(() => {
                       >
                         ${entities.map(entity => {
                         return ct.LitHtml `
-                            <paper-item>${entity}</paper-item>
+                            <paper-item>${entity.id}</paper-item>
                           `;
                     })}
                       </paper-listbox>
