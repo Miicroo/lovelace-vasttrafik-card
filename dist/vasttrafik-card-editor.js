@@ -29,30 +29,18 @@ customElements.whenDefined('card-tools').then(() => {
             this.title = this._config.title;
             this.entities = this._parseEntities(config.entities);
 
-            const valueOptions = {
-                icon: 'numeric',
-                name: 'Settings',
-                secondary: 'Value settings.',
-                show: false,
-            };
-            const entityOptions = {
-                show: false,
-                options: {
-                    value: Object.assign({}, valueOptions),
-                },
-            };
-
-            this._entityOptionsArray = []; // TODO maybe move out, like to constructor?
-            for (const config of this.entities) {
-                this._entityOptionsArray.push(Object.assign({}, entityOptions));
-            }
-
             if (!this._options) {
+                
+                this._entityOptionsArray = this.entities.map(entity => 
+                    ({
+                        show: false,
+                    })
+                );
+                
                 this._options = {
                     entities: this._entityOptionsArray,
                 };
             }
-            console.log(this._options);
         }
 
         _parseEntities(configuredEntities) {
@@ -228,8 +216,8 @@ customElements.whenDefined('card-tools').then(() => {
         if (!this.hass) {
             return ct.LitHtml ``;
         }
-        const options = this._options.entities[index].options.value;
-        const config = this.entities[index];
+        const options = this._options.entities[index].options;
+        const entity = this.entities[index];
         return ct.LitHtml `
           <div class="category" id="value">
             ${options.show
@@ -239,10 +227,10 @@ customElements.whenDefined('card-tools').then(() => {
                       class="value-number"
                       label="Delay"
                       type="number"
-                      .value="${config.delay ? config.delay : ''}"
+                      .value="${entity.delay ? entity.delay : ''}"
                       editable
                       .configAttribute=${'delay'}
-                      .configObject=${config}
+                      .configObject=${entity}
                       @value-changed=${this._valueChanged}
                     ></paper-input>
                   </div>
