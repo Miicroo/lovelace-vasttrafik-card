@@ -33,7 +33,9 @@ customElements.whenDefined('card-tools').then(() => {
                 
                 this._entityOptionsArray = this.entities.map(entity => 
                     ({
-                        show: false,
+                        options: {
+                            show: false,
+                        }
                     })
                 );
                 
