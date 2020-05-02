@@ -52,6 +52,7 @@ customElements.whenDefined('card-tools').then(() => {
                     entities: this._entityOptionsArray,
                 };
             }
+            console.log(this._options);
         }
 
         _parseEntities(configuredEntities) {
@@ -116,11 +117,8 @@ customElements.whenDefined('card-tools').then(() => {
         const options = this._options.entities;
         const entities = this._availableEntities();
         const valueElementArray = [];
-            console.log(this.entities);
         for (const entity of this.entities) {
             const index = this.entities.indexOf(entity);
-            console.log(entity);
-            console.log(index);
             valueElementArray.push(ct.LitHtml `
                 <div class="sub-category" style="display: flex; flex-direction: row; align-items: center;">
                   <div style="display: flex; align-items: center; flex-direction: column;">
@@ -156,7 +154,6 @@ customElements.whenDefined('card-tools').then(() => {
                         fallback-selection="0"
                       >
                         ${entities.map(entity => {
-                console.log(entity);
                         return ct.LitHtml `
                             <paper-item>${entity}</paper-item>
                           `;
