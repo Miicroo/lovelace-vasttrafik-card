@@ -118,7 +118,7 @@ customElements.whenDefined('card-tools').then(() => {
                       style="font-size: 10px; margin-bottom: -8px; opacity: 0.5;"
                       @click=${this._toggleThing}
                       .options=${options[index].options}
-                      .optionsTarget=${options[index].options}
+                      .optionsTarget=${options}
                       .index=${index}
                     >
                       options
@@ -127,7 +127,7 @@ customElements.whenDefined('card-tools').then(() => {
                       icon="mdi:chevron-${options[index].show ? 'up' : 'down'}"
                       @click=${this._toggleThing}
                       .options=${options[index].options}
-                      .optionsTarget=${options[index].options}
+                      .optionsTarget=${options}
                       .index=${index}
                     ></ha-icon>
                   </div>
@@ -258,6 +258,7 @@ customElements.whenDefined('card-tools').then(() => {
 
     _toggleThing(ev) {
         const options = ev.target.options;
+        console.log(options);
         const show = !options.show;
         if (ev.target.optionsTarget) {
             if (Array.isArray(ev.target.optionsTarget)) {
