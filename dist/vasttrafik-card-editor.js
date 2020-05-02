@@ -116,8 +116,8 @@ customElements.whenDefined('card-tools').then(() => {
                     <div
                       style="font-size: 10px; margin-bottom: -8px; opacity: 0.5;"
                       @click=${this._toggleThing}
-                      .options=${options[index]}
-                      .optionsTarget=${options}
+                      .options=${options[index].options}
+                      .optionsTarget=${options[index].options}
                       .index=${index}
                     >
                       options
