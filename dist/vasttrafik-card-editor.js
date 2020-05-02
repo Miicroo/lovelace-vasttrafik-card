@@ -43,7 +43,6 @@ customElements.whenDefined('card-tools').then(() => {
                     entities: this._entityOptionsArray,
                 };
             }
-            console.log(this._options);
         }
 
         _parseEntities(configuredEntities) {
@@ -66,6 +65,8 @@ customElements.whenDefined('card-tools').then(() => {
 
 
     render() {
+        
+            console.log(this._options);
         return ct.LitHtml `
           <div class="card-config">
             <paper-input
