@@ -126,8 +126,8 @@ customElements.whenDefined('card-tools').then(() => {
                     <ha-icon
                       icon="mdi:chevron-${options[index].show ? 'up' : 'down'}"
                       @click=${this._toggleThing}
-                      .options=${options[index]}
-                      .optionsTarget=${options}
+                      .options=${options[index].options}
+                      .optionsTarget=${options[index].options}
                       .index=${index}
                     ></ha-icon>
                   </div>
