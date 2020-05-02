@@ -43,6 +43,7 @@ customElements.whenDefined('card-tools').then(() => {
                     entities: this._entityOptionsArray,
                 };
             }
+            console.log(this._options);
         }
 
         _parseEntities(configuredEntities) {
