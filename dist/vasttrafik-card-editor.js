@@ -221,6 +221,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
         const options = this._options.entities[index].options;
         const entity = this.entities[index];
+        console.log(entity);
         return ct.LitHtml `
           <div class="category" id="value">
             ${options.show
