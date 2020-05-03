@@ -11,6 +11,14 @@ const fireEvent = (node, type, detail, options) => {
     return event;
 };
 
+const arrayMove = (arr, fromIndex, toIndex) => {
+    const element = arr[fromIndex];
+    const newArray = arr.slice();
+    newArray.splice(fromIndex, 1);
+    newArray.splice(toIndex, 0, element);
+    return newArray;
+}
+
 customElements.whenDefined('card-tools').then(() => {
     const ct = customElements.get('card-tools');
 
@@ -263,7 +271,7 @@ customElements.whenDefined('card-tools').then(() => {
         this._config = Object.assign(this._config, newConfig);
         fireEvent(this, 'config-changed', { config: this._config });
     }
-    
+
     _valueChanged(ev) {
         if (!this._config || !this.hass) {
             return;
