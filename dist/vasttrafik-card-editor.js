@@ -25,24 +25,7 @@ customElements.whenDefined('card-tools').then(() => {
 
         setConfig(config) {
             this._config = Object.assign({}, config);
-
-            this.title = this._config.title;
-            this.entities = this._parseEntities(config.entities);
-
-            if (!this._options) {
-                
-                this._entityOptionsArray = this.entities.map(entity => 
-                    ({
-                        options: {
-                            show: false,
-                        }
-                    })
-                );
-                
-                this._options = {
-                    entities: this._entityOptionsArray,
-                };
-            }
+            this._config.entities = this._parseEntities(config.entities);
         }
 
         _parseEntities(configuredEntities) {
@@ -71,9 +54,9 @@ customElements.whenDefined('card-tools').then(() => {
           <div class="card-config">
             <paper-input
                 label='Title'
-                .value='${this._title}'
-                .configObject='${'title'}'
-                @value-changed='${this._valueChanged}'>
+                .configAttribute=${'title'}
+                .configObject=${'_config'}
+                @value-changed=${this._valueChanged}>
             </paper-input>
 
             ${this._createEntitiesElement()}
@@ -93,8 +76,8 @@ customElements.whenDefined('card-tools').then(() => {
                     mini
                     icon="mdi:plus"
                     @click=${this._addEntity}
-                    .configArray=${this.entities}
-                    .configAddValue=${'entity'}
+                    .configArray=${this._config.entities}
+                    .configAddValue=${'id'}
                     .sourceArray=${this._config.entities}
                   ></ha-fab>
                 </div>
@@ -106,37 +89,18 @@ customElements.whenDefined('card-tools').then(() => {
         if (!this.hass || !this._config) {
             return [ct.LitHtml ``];
         }
-        const options = this._options.entities;
         const entities = this._availableEntities();
         const valueElementArray = [];
-        for (const entity of this.entities) {
-            const index = this.entities.indexOf(entity);
+        for (const entity of this._config.entities) {
+            const index = this._config.entities.indexOf(entity);
             valueElementArray.push(ct.LitHtml `
                 <div class="sub-category" style="display: flex; flex-direction: row; align-items: center;">
-                  <div style="display: flex; align-items: center; flex-direction: column;">
-                    <div
-                      style="font-size: 10px; margin-bottom: -8px; opacity: 0.5;"
-                      @click=${this._toggleThing}
-                      .options=${options[index].options}
-                      .optionsTarget=${options}
-                      .index=${index}
-                    >
-                      options
-                    </div>
-                    <ha-icon
-                      icon="mdi:chevron-${options[index].show ? 'up' : 'down'}"
-                      @click=${this._toggleThing}
-                      .options=${options[index].options}
-                      .optionsTarget=${options}
-                      .index=${index}
-                    ></ha-icon>
-                  </div>
                   <div class="value" style="flex-grow: 1;">
                     <paper-dropdown-menu
                       label="Entity"
                       @value-changed=${this._valueChanged}
                       .configAttribute=${'id'}
-                      .configObject=${this.entities[index]}
+                      .configObject=${this._config.entities[index]}
                       .ignoreNull=${true}
                       style="width: 100%;"
                     >
@@ -160,9 +124,9 @@ customElements.whenDefined('card-tools').then(() => {
                           icon="mdi:arrow-up"
                           @click=${this._moveEntity}
                           .configDirection=${'up'}
-                          .configArray=${this.entities}
+                          .configArray=${this._config.entities}
                           .arrayAttribute=${'entities'}
-                          .arraySource=${this._config} // TODO ?!?
+                          .arraySource=${this._config}
                           .index=${index}
                         ></ha-icon>
                       `
@@ -176,9 +140,9 @@ customElements.whenDefined('card-tools').then(() => {
                           icon="mdi:arrow-down"
                           @click=${this._moveEntity}
                           .configDirection=${'down'}
-                          .configArray=${this.entities}
+                          .configArray=${this._config.entities}
                           .arrayAttribute=${'entities'}
-                          .arraySource=${this._config} // TODO !?!?
+                          .arraySource=${this._config}
                           .index=${index}
                         ></ha-icon>
                       `
@@ -189,8 +153,8 @@ customElements.whenDefined('card-tools').then(() => {
                     class="ha-icon-large"
                     icon="mdi:close"
                     @click=${this._removeEntity}
-                    .configAttribute=${'entity'}
-                    .configArray=${'entities'}
+                    .configAttribute=${'entities'}
+                    .configArray=${this._config}
                     .configIndex=${index}
                   ></ha-icon>
                 </div>
@@ -220,27 +184,22 @@ customElements.whenDefined('card-tools').then(() => {
         if (!this.hass) {
             return ct.LitHtml ``;
         }
-        const options = this._options.entities[index].options;
-        const entity = this.entities[index];
+        const entity = this._config.entities[index];
         console.log(entity);
         return ct.LitHtml `
           <div class="category" id="value">
-            ${options.show
-                ? ct.LitHtml `
-                  <div class="value">
-                    <paper-input
-                      class="value-number"
-                      label="Delay"
-                      type="number"
-                      .value="${entity.delay ? entity.delay : ''}"
-                      editable
-                      .configAttribute=${'delay'}
-                      .configObject=${entity}
-                      @value-changed=${this._valueChanged}
-                    ></paper-input>
-                  </div>
-                `
-                : ''}
+              <div class="value">
+                <paper-input
+                  class="value-number"
+                  label="Delay"
+                  type="number"
+                  .value="${entity.delay ? entity.delay : ''}"
+                  editable
+                  .configAttribute=${'delay'}
+                  .configObject=${this._config.entities[index]}
+                  @value-changed=${this._valueChanged}
+                ></paper-input>
+              </div>
           </div>
         `;
     }
@@ -254,26 +213,6 @@ customElements.whenDefined('card-tools').then(() => {
         @value-changed=${this._valueChanged}
       ></ha-code-editor>
     `;
-    }
-
-    _toggleThing(ev) {
-        const options = ev.target.options;
-        console.log(options);
-        const show = !options.show;
-        if (ev.target.optionsTarget) {
-            if (Array.isArray(ev.target.optionsTarget)) {
-                for (const options of ev.target.optionsTarget) {
-                    options.show = false;
-                }
-            }
-            else {
-                for (const [key] of Object.entries(ev.target.optionsTarget)) {
-                    ev.target.optionsTarget[key].show = false;
-                }
-            }
-        }
-        options.show = show;
-        this._toggle = !this._toggle;
     }
 
     _addEntity(ev) {
