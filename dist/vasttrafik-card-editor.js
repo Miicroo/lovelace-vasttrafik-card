@@ -39,11 +39,11 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         get _entities() {
-            return this.entities || [];
+            return this._config.entities || [];
         }
 
         get _title() {
-            return this.title || '';
+            return this._config.title || '';
         }
 
 
@@ -133,7 +133,7 @@ customElements.whenDefined('card-tools').then(() => {
                         : ct.LitHtml `
                         <ha-icon icon="mdi:arrow-up" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
                       `}
-                  ${index !== this.entities.length - 1
+                  ${index !== this._config.entities.length - 1
                         ? ct.LitHtml `
                         <ha-icon
                           class="ha-icon-large"
@@ -253,7 +253,7 @@ customElements.whenDefined('card-tools').then(() => {
         const target = ev.target;
         const entitiesArray = [];
         let index = 0;
-        for (const config of this.entities) {
+        for (const config of this._config.entities) {
             if (target.configIndex !== index) {
                 entitiesArray.push(config);
             }
@@ -263,6 +263,7 @@ customElements.whenDefined('card-tools').then(() => {
         this._config = Object.assign(this._config, newConfig);
         fireEvent(this, 'config-changed', { config: this._config });
     }
+    
     _valueChanged(ev) {
         if (!this._config || !this.hass) {
             return;
@@ -271,12 +272,8 @@ customElements.whenDefined('card-tools').then(() => {
         if (target.configObject[target.configAttribute] == target.value) {
             return;
         }
-        if (target.configAdd && target.value !== '') {
-            target.configObject = Object.assign(target.configObject, {
-                [target.configAdd]: { [target.configAttribute]: target.value },
-            });
-        }
-        if (target.configAttribute && target.configObject && !target.configAdd) {
+        
+        if (target.configAttribute && target.configObject) {
             if (target.value == '' || target.value === false) {
                 if (target.ignoreNull == true)
                     return;
@@ -287,7 +284,7 @@ customElements.whenDefined('card-tools').then(() => {
                 target.configObject[target.configAttribute] = target.value;
             }
         }
-        this._config.entities = this.entities;
+
         fireEvent(this, 'config-changed', { config: this._config });
     }
 
