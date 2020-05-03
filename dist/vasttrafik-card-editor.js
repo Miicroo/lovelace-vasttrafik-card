@@ -55,386 +55,241 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
 
-    render() {
-        return ct.LitHtml `
-          <div class="card-config">
-            <paper-input
-                label='Title'
-                .configAttribute=${'title'}
-                .configObject=${'_config'}
-                @value-changed=${this._valueChanged}>
-            </paper-input>
-
-            ${this._createEntitiesElement()}
-          </div>
-        `;
-    }
-
-    _createEntitiesElement() {
-        if (!this.hass || !this._config) {
-            return ct.LitHtml ``;
-        }
-        return ct.LitHtml `
-              <div class="card-background" style="max-height: 400px; overflow: auto;">
-                ${this._createEntitiesValues()}
-                <div class="sub-category" style="display: flex; flex-direction: column; align-items: flex-end;">
-                  <ha-fab
-                    mini
-                    icon="mdi:plus"
-                    @click=${this._addEntity}
-                    .configArray=${this._config.entities}
-                    .configAddValue=${'id'}
-                    .sourceArray=${this._config.entities}
-                  ></ha-fab>
-                </div>
-              </div>
-        `;
-    }
-
-    _createEntitiesValues() {
-        if (!this.hass || !this._config) {
-            return [ct.LitHtml ``];
-        }
-        const entities = this._availableEntities();
-        const valueElementArray = [];
-        for (const entity of this._config.entities) {
-            const index = this._config.entities.indexOf(entity);
-            valueElementArray.push(ct.LitHtml `
-                <div class="sub-category" style="display: flex; flex-direction: row; align-items: center;">
-                  <div class="value" style="flex-grow: 1;">
-                    <paper-dropdown-menu
-                      label="Entity"
-                      @value-changed=${this._valueChanged}
-                      .configAttribute=${'id'}
-                      .configObject=${this._config.entities[index]}
-                      .ignoreNull=${true}
-                      style="width: 100%;"
-                    >
-                      <paper-listbox
-                        slot="dropdown-content"
-                        .selected=${entities.indexOf(entity.id)}
-                        fallback-selection="0"
-                      >
-                        ${entities.map(entity => {
-                        return ct.LitHtml `
-                            <paper-item>${entity}</paper-item>
-                          `;
-                    })}
-                      </paper-listbox>
-                    </paper-dropdown-menu>
-                  </div>
-                  ${index !== 0
-                        ? ct.LitHtml `
-                        <ha-icon
-                          class="ha-icon-large"
-                          icon="mdi:arrow-up"
-                          @click=${this._moveEntity}
-                          .configDirection=${'up'}
-                          .configArray=${this._config.entities}
-                          .arrayAttribute=${'entities'}
-                          .arraySource=${this._config}
-                          .index=${index}
-                        ></ha-icon>
-                      `
-                        : ct.LitHtml `
-                        <ha-icon icon="mdi:arrow-up" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
-                      `}
-                  ${index !== this._config.entities.length - 1
-                        ? ct.LitHtml `
-                        <ha-icon
-                          class="ha-icon-large"
-                          icon="mdi:arrow-down"
-                          @click=${this._moveEntity}
-                          .configDirection=${'down'}
-                          .configArray=${this._config.entities}
-                          .arrayAttribute=${'entities'}
-                          .arraySource=${this._config}
-                          .index=${index}
-                        ></ha-icon>
-                      `
-                        : ct.LitHtml `
-                        <ha-icon icon="mdi:arrow-down" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
-                      `}
-                  <ha-icon
-                    class="ha-icon-large"
-                    icon="mdi:close"
-                    @click=${this._removeEntity}
-                    .configAttribute=${'entities'}
-                    .configArray=${this._config}
-                    .configIndex=${index}
-                  ></ha-icon>
-                </div>
-                <div class="options">
-                  ${this._createValueElement(index)}
-                </div>
-            `);
-        }
-        return valueElementArray;
-    }
-
-    _availableEntities() {
-        return Object.keys(this.hass.states).filter(
-            (eid) => {
-                const state = this.hass.states[eid];
-                const attribution = state.attributes.attribution;
-                return !!attribution && attribution.toLowerCase().includes('västtrafik');
-            }
-        );
-    }
-
-    _createValueElement(index) {
-        if (!this.hass) {
-            return ct.LitHtml ``;
-        }
-        const entity = this._config.entities[index];
-        console.log(entity);
-        return ct.LitHtml `
-          <div class="category" id="value">
-              <div class="value">
-                <paper-input
-                  class="value-number"
-                  label="Delay"
-                  type="number"
-                  .value="${entity.delay ? entity.delay : ''}"
-                  editable
-                  .configAttribute=${'delay'}
-                  .configObject=${this._config.entities[index]}
-                  @value-changed=${this._valueChanged}
-                ></paper-input>
-              </div>
-          </div>
-        `;
-    }
-
-    _createEditorElement() {
-        return ct.LitHtml `
-      <ha-code-editor
-        mode="yaml"
-        autofocus=""
-        _value=${`test: who`}
-        @value-changed=${this._valueChanged}
-      ></ha-code-editor>
-    `;
-    }
-
-    _addEntity(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        let newObject;
-        if (target.configAddObject) {
-            newObject = target.configAddObject;
-        }
-        else {
-            newObject = { [target.configAddValue]: '' };
-        }
-        const newArray = target.configArray.slice();
-        newArray.push(newObject);
-        this._config.entities = newArray;
-
-        fireEvent(this, 'config-changed', { config: this._config });
-    }
-    _moveEntity(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        let newArray = target.configArray.slice();
-        if (target.configDirection == 'up')
-            newArray = arrayMove(newArray, target.index, target.index - 1);
-        else if (target.configDirection == 'down')
-            newArray = arrayMove(newArray, target.index, target.index + 1);
-        this._config.entities = newArray;
-        fireEvent(this, 'config-changed', { config: this._config });
-    }
-    _removeEntity(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        const entitiesArray = [];
-        let index = 0;
-        for (const config of this._config.entities) {
-            if (target.configIndex !== index) {
-                entitiesArray.push(config);
-            }
-            index++;
-        }
-        const newConfig = { [target.configArray]: entitiesArray };
-        this._config = Object.assign(this._config, newConfig);
-        fireEvent(this, 'config-changed', { config: this._config });
-    }
-
-    _valueChanged(ev) {
-        if (!this._config || !this.hass) {
-            return;
-        }
-        const target = ev.target;
-        if (target.configObject[target.configAttribute] == target.value) {
-            return;
-        }
-        
-        if (target.configAttribute && target.configObject) {
-            if (target.value == '' || target.value === false) {
-                if (target.ignoreNull == true)
-                    return;
-                delete target.configObject[target.configAttribute];
-            }
-            else {
-                console.log(target.configObject);
-                target.configObject[target.configAttribute] = target.value;
-            }
-        }
-
-        fireEvent(this, 'config-changed', { config: this._config });
-    }
-
-/*
         render() {
-            if (!this.hass) {
-                return ct.Litct.LitHtml``;
-            }
+            return ct.LitHtml `
+              <div class="card-config">
+                <paper-input
+                    label='Title'
+                    .configAttribute=${'title'}
+                    .configObject=${'_config'}
+                    .value=${this._config.title}
+                    @value-changed=${this._valueChanged}>
+                </paper-input>
 
-            const allowedEntities = Object.keys(this.hass.states).filter(
+                ${this._createEntitiesElement()}
+              </div>
+            `;
+        }
+
+        _createEntitiesElement() {
+            if (!this.hass || !this._config) {
+                return ct.LitHtml ``;
+            }
+            return ct.LitHtml `
+                  <div class="card-background" style="max-height: 400px; overflow: auto;">
+                    ${this._createEntitiesValues()}
+                    <div class="sub-category" style="display: flex; flex-direction: column; align-items: flex-end;">
+                      <ha-fab
+                        mini
+                        icon="mdi:plus"
+                        @click=${this._addEntity}
+                        .configArray=${this._config.entities}
+                        .configAddValue=${'id'}
+                        .sourceArray=${this._config.entities}
+                      ></ha-fab>
+                    </div>
+                  </div>
+            `;
+        }
+
+        _createEntitiesValues() {
+            if (!this.hass || !this._config) {
+                return [ct.LitHtml ``];
+            }
+            const entities = this._availableEntities();
+            const valueElementArray = [];
+            for (const entity of this._config.entities) {
+                const index = this._config.entities.indexOf(entity);
+                valueElementArray.push(ct.LitHtml `
+                    <div class="sub-category" style="display: flex; flex-direction: row; align-items: center;">
+                      <div class="value" style="flex-grow: 1;">
+                        <paper-dropdown-menu
+                          label="Entity"
+                          @value-changed=${this._valueChanged}
+                          .configAttribute=${'id'}
+                          .configObject=${this._config.entities[index]}
+                          .ignoreNull=${true}
+                          style="width: 100%;"
+                        >
+                          <paper-listbox
+                            slot="dropdown-content"
+                            .selected=${entities.indexOf(entity.id)}
+                            fallback-selection="0"
+                          >
+                            ${entities.map(entity => {
+                            return ct.LitHtml `
+                                <paper-item>${entity}</paper-item>
+                              `;
+                        })}
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                      ${index !== 0
+                            ? ct.LitHtml `
+                            <ha-icon
+                              class="ha-icon-large"
+                              icon="mdi:arrow-up"
+                              @click=${this._moveEntity}
+                              .configDirection=${'up'}
+                              .configArray=${this._config.entities}
+                              .arrayAttribute=${'entities'}
+                              .arraySource=${this._config}
+                              .index=${index}
+                            ></ha-icon>
+                          `
+                            : ct.LitHtml `
+                            <ha-icon icon="mdi:arrow-up" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
+                          `}
+                      ${index !== this._config.entities.length - 1
+                            ? ct.LitHtml `
+                            <ha-icon
+                              class="ha-icon-large"
+                              icon="mdi:arrow-down"
+                              @click=${this._moveEntity}
+                              .configDirection=${'down'}
+                              .configArray=${this._config.entities}
+                              .arrayAttribute=${'entities'}
+                              .arraySource=${this._config}
+                              .index=${index}
+                            ></ha-icon>
+                          `
+                            : ct.LitHtml `
+                            <ha-icon icon="mdi:arrow-down" style="opacity: 25%;" class="ha-icon-large"></ha-icon>
+                          `}
+                      <ha-icon
+                        class="ha-icon-large"
+                        icon="mdi:close"
+                        @click=${this._removeEntity}
+                        .configAttribute=${'entities'}
+                        .configArray=${this._config}
+                        .configIndex=${index}
+                      ></ha-icon>
+                    </div>
+                    <div class="options">
+                      ${this._createValueElement(index)}
+                    </div>
+                `);
+            }
+            return valueElementArray;
+        }
+
+        _availableEntities() {
+            return Object.keys(this.hass.states).filter(
                 (eid) => {
                     const state = this.hass.states[eid];
                     const attribution = state.attributes.attribution;
                     return !!attribution && attribution.toLowerCase().includes('västtrafik');
                 }
             );
-
-            return ct.Litct.LitHtml`
-                    <div class='card-config'>
-                        <div>
-                            <paper-input
-                                label='Title'
-                                .value='${this._title}'
-                                .configValue='${'title'}'
-                                @value-changed='${this._valueChanged}'>
-                            </paper-input>
-                            <div class='entities'>
-                                ${this._entities.map((entityConf, index) => {
-                const entityId = entityConf.id || entityConf;
-                const entityDelay = entityConf.delay || 0;
-
-                console.log(entityConf);
-                console.log(entityId);
-                console.log(entityDelay);
-
-                return ct.Litct.LitHtml`
-                                        <div class='entity'>
-                                            <ha-entity-picker
-                                                .hass='${this.hass}'
-                                                .value='${entityId}'
-                                                .configValue='${entityId}'
-                                                .index='${index}'
-                                                @change='${this._valueChanged}'>
-                                            </ha-entity-picker>
-                                            <paper-input
-                                                id='year'
-                                                type='number'
-                                                no-label-float=''
-                                                maxlength='4'
-                                                max='9999'
-                                                min='0'
-                                                auto-validate='true'
-                                                value='${entityDelay}'
-                                                style='width: 50px;'
-                                                @click='${(ev) => ev.stopPropagation()}'
-                                                @change='${this.valueChanged}'>
-                                            </paper-input>
-                                            <paper-icon-button
-                                                title='Move entity down'
-                                                icon='hass:arrow-down'
-                                                .index='${index}'
-                                                @click='${this._entityDown}'
-                                                ?disabled='${index === this._entities.length - 1}'>
-                                            </paper-icon-button>
-                                            <paper-icon-button
-                                                title='Move entity up'
-                                                icon='hass:arrow-up'
-                                                .index='${index}'
-                                                @click='${this._entityUp}'
-                                                ?disabled='${index === 0}'>
-                                            </paper-icon-button>
-                                        </div>
-                                    `;
-            })}
-
-                                <ha-entity-picker
-                                    .hass='${this.hass}'
-                                    @change='${this._addEntity}'>
-                                </ha-entity-picker>
-                            </div>
-                        </div>
-                    </div>
-                `;
         }
 
+        _createValueElement(index) {
+            if (!this.hass) {
+                return ct.LitHtml ``;
+            }
+            const entity = this._config.entities[index];
+            console.log(entity);
+            return ct.LitHtml `
+              <div class="category" id="value">
+                  <div class="value">
+                    <paper-input
+                      class="value-number"
+                      label="Delay"
+                      type="number"
+                      .value="${entity.delay ? entity.delay : ''}"
+                      editable
+                      .configAttribute=${'delay'}
+                      .configObject=${this._config.entities[index]}
+                      @value-changed=${this._valueChanged}
+                    ></paper-input>
+                  </div>
+              </div>
+            `;
+        }
+
+        _createEditorElement() {
+            return ct.LitHtml `
+          <ha-code-editor
+            mode="yaml"
+            autofocus=""
+            _value=${`test: who`}
+            @value-changed=${this._valueChanged}
+          ></ha-code-editor>
+        `;
+        }
 
         _addEntity(ev) {
-            const target = ev.target;
-            if (target.value === '') {
+            if (!this._config || !this.hass) {
                 return;
             }
-
-            const newConfigEntities = this.entities.concat({
-                id: target.value,
-                delay: 0
-            });
-            target.value = '';
-
-            fireEvent(this, 'entities-changed', {entities: newConfigEntities});
-        }
-
-        _entityUp(ev) {
             const target = ev.target;
-            const newEntities = this.entities.concat();
+            let newObject;
+            if (target.configAddObject) {
+                newObject = target.configAddObject;
+            }
+            else {
+                newObject = { [target.configAddValue]: '' };
+            }
+            const newArray = target.configArray.slice();
+            newArray.push(newObject);
+            this._config.entities = newArray;
 
-            [newEntities[target.index - 1], newEntities[target.index]] = [
-                newEntities[target.index],
-                newEntities[target.index - 1],
-            ];
-
-            fireEvent(this, 'entities-changed', {entities: newEntities});
+            fireEvent(this, 'config-changed', { config: this._config });
         }
-
-        _entityDown(ev) {
+        _moveEntity(ev) {
+            if (!this._config || !this.hass) {
+                return;
+            }
             const target = ev.target;
-            const newEntities = this.entities.concat();
-
-            [newEntities[target.index + 1], newEntities[target.index]] = [
-                newEntities[target.index],
-                newEntities[target.index + 1],
-            ];
-
-            fireEvent(this, 'entities-changed', {entities: newEntities});
+            let newArray = target.configArray.slice();
+            if (target.configDirection == 'up')
+                newArray = arrayMove(newArray, target.index, target.index - 1);
+            else if (target.configDirection == 'down')
+                newArray = arrayMove(newArray, target.index, target.index + 1);
+            this._config.entities = newArray;
+            fireEvent(this, 'config-changed', { config: this._config });
+        }
+        _removeEntity(ev) {
+            if (!this._config || !this.hass) {
+                return;
+            }
+            const target = ev.target;
+            const entitiesArray = [];
+            let index = 0;
+            for (const config of this._config.entities) {
+                if (target.configIndex !== index) {
+                    entitiesArray.push(config);
+                }
+                index++;
+            }
+            const newConfig = { [target.configArray]: entitiesArray };
+            this._config = Object.assign(this._config, newConfig);
+            fireEvent(this, 'config-changed', { config: this._config });
         }
 
         _valueChanged(ev) {
-            if (!this.config || !this.hass) {
+            if (!this._config || !this.hass) {
                 return;
             }
-
             const target = ev.target;
-            if (this[`_${target.configValue}`] === target.value) {
+            if (target.configObject[target.configAttribute] == target.value) {
                 return;
             }
-
-            if (target.configValue) {
-                if (target.value === '') {
-                    delete this.config[target.configValue];
-                } else {
-                    this.config = {
-                        ...this.config,
-                        [target.configValue]: target.checked !== undefined ? target.checked : target.value,
-                    };
+            
+            if (target.configAttribute && target.configObject) {
+                if (target.value == '' || target.value === false) {
+                    if (target.ignoreNull == true)
+                        return;
+                    delete target.configObject[target.configAttribute];
+                }
+                else {
+                    console.log(target.configObject);
+                    target.configObject[target.configAttribute] = target.value;
                 }
             }
 
-            fireEvent(this, 'config-changed', {config: this.config});
-        }*/
+            fireEvent(this, 'config-changed', { config: this._config });
+        }
 
         static get styles() {
             return ct.LitCSS`
