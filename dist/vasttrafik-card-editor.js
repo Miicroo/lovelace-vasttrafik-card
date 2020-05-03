@@ -56,8 +56,6 @@ customElements.whenDefined('card-tools').then(() => {
 
 
     render() {
-        
-            console.log(this._options);
         return ct.LitHtml `
           <div class="card-config">
             <paper-input
@@ -166,14 +164,10 @@ customElements.whenDefined('card-tools').then(() => {
                     .configIndex=${index}
                   ></ha-icon>
                 </div>
-                ${options[index].show
-                        ? ct.LitHtml `
-                      <div class="options">
-                        ${this._createValueElement(index)}
-                      </div>
-                    `
-                : ''}
-      `);
+                <div class="options">
+                  ${this._createValueElement(index)}
+                </div>
+            `);
         }
         return valueElementArray;
     }
