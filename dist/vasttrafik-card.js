@@ -41,7 +41,7 @@ customElements.whenDefined('card-tools').then(() => {
             const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
 
             return ct.LitHtml`
-	            <link type="text/css" rel="stylesheet" href="local/community/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
+	            <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
 	            <ha-card>
 	                <div class="card-header">
 	                    ${this.title}
