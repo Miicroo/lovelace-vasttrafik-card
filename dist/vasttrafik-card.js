@@ -32,7 +32,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         render() {
-	    if (!this.isVerified) {
+	       if (!this.isVerified) {
                 this._verifyEntities();
                 this.isVerified = true;
             }
@@ -93,6 +93,16 @@ customElements.whenDefined('card-tools').then(() => {
             const departureTime = hassEntity.state;
             const timeUntilLeave = this._getTimeUntil(entity);
             const from = attributes.from || '';
+
+            if (this._getTimeUntil(entity) > 30) {
+                this.hass.callService("system_log", "write",
+                    {
+                        "level": "warning",
+                        "logger": "lovelace-vasttrafik-card",
+                        "message": `${line} has old values, departures in ${timeUntilLeave} at ${departureTime}`,
+                    }
+                );
+            }
 
             return ct.LitHtml`<tr>
                             <td class="${lineClass} line">${line}</td>
