@@ -80,6 +80,16 @@ table {
     color: rgb(0, 182, 240);
     background-color: rgb(253, 204, 153);
 }
+.line-X1, .line-X2, .line-X3, .line-X4 {
+    border-color: rgb(255, 255, 80);
+    color: rgb(212, 0, 162);
+    background-color: rgb(255, 255, 80);
+}
+.line-190, .line-193, .line-194, .line-196, .line-197, .line-319, .line-16X, .line-82, .line-482, .line-582 {
+    border-color: rgb(255, 255, 80);
+    color: rgb(0, 97, 235);
+    background-color: rgb(255, 255, 80);
+}
 .bus-rapid-transit {
     border-color: rgb(0, 182, 240);
     color: rgb(180, 213, 84);
