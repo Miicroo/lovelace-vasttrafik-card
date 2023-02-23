@@ -75,7 +75,7 @@ customElements.whenDefined('card-tools').then(() => {
         _sortEntities() {
             this.entities = this.entities
                 .filter(entity => entity.id in this.hass.states)
-                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state}, entity));
+                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay}, entity));
 
             this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
         }
