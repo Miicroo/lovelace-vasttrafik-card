@@ -18,6 +18,8 @@ customElements.whenDefined('card-tools').then(() => {
         setConfig(config) {
             this.title = config.title || 'Västtrafik';
             this.entities = this._parseEntities(config.entities);
+            this.shouldSort = config.sort !== undefined ? !!(config.sort) : true;
+            this.municipality = config.municipality || 'Göteborg';
             this.config = config;
         }
 
@@ -32,16 +34,18 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         render() {
-	    if (!this.isVerified) {
+	        if (!this.isVerified) {
                 this._verifyEntities();
                 this.isVerified = true;
             }
 	    
             this._sortEntities();
             const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
+            const linesCssFile = `lines-${this.municipality.toLowerCase().replace(' ', '-').replace('å', 'a').replace('ä', 'a').replace('ö', 'o')}.css`;
 
             return ct.LitHtml`
 	            <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
+                <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/${linesCssFile}"></link>
 	            <ha-card>
 	                <div class="card-header">
 	                    ${this.title}
@@ -76,8 +80,10 @@ customElements.whenDefined('card-tools').then(() => {
             this.entities = this.entities
                 .filter(entity => entity.id in this.hass.states)
                 .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay}, entity));
-
-            this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
+                
+            if (this.shouldSort) {
+                this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
+            }
         }
 
         _renderEntity(entity) {
@@ -103,16 +109,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         _getLineClass(line) {
-            const tramLines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13'];
-            const busRapidTransits = ['16', '17', '18', '19', '25', '50', '52', '60'];
-
-            if (tramLines.indexOf(line) !== -1) {
-                return `line-${line}`;
-            } else if (busRapidTransits.indexOf(line) !== -1) {
-                return 'bus-rapid-transit';
-            } else {
-                return 'regular-line';
-            }
+            return `line-${line}`;
         }
 
         _getTimeUntil(entity) {
