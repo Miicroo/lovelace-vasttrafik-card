@@ -19,19 +19,19 @@ Styled entities using the Västtrafik theme in a lovelace entities card. All tra
 ## Entity format
 Entities can be defined in 3 different ways:
 
-1) As a simple string containing the id
+1) As a simple string containing the id. If there is a delay added to the sensor it will be used in calculating next departure time.
 ```yaml
 - sensor.ekedal_till_brunnsparken
 - sensor.godhemsgatan_till_brunnsparken
 ```
-2) As an object containing the id and the delay in minutes (e.g. how long it would take you to walk to the departing station)
+2) As an object containing the id and a delay in minutes (e.g. how long it would take you to walk to the departing station). This will override the delay that is specified in the sensor configuration.
 ```yaml
 - id: sensor.ekedal_till_brunnsparken
   delay: 3
 - sensor.godhemsgatan_till_brunnsparken
   delay: 2
 ```
-3) As a combination of 1) and 2), the entities without specified delay will get delay = 0.
+3) As a combination of 1) and 2), the entities without specified delay will get the delay specified in the sensor configuration.
 
 
 ## Examples
