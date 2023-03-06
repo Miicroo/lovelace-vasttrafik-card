@@ -93,6 +93,7 @@ Vårgårda
 Västra Götaland
 ```
 
+
 ## Examples
 ```yaml
 type: 'custom:vasttrafik-card'
@@ -113,3 +114,7 @@ sort: true
 1. A warning will be printed to the console if any entity id you provide is not attributed to Västtrafik
 2. The default sensor does not expose from/to, use [this one](https://github.com/Miicroo/ha-vasttrafik) instead
 3. The sensor updates every 2 minutes, so you will sometimes get `-2 minutes` until departure
+
+
+## Västtrafik updated their designs?
+To get the latest designs/colors exported as css, run `python3 ../helpers/generate_css.py` from the `dist` folder.
