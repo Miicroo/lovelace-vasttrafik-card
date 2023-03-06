@@ -17,16 +17,16 @@ customElements.whenDefined('card-tools').then(() => {
 
         setConfig(config) {
             this.title = config.title || 'Västtrafik';
-            this.entities = this._parseEntities(config.entities);
             this.shouldSort = config.sort !== undefined ? !!(config.sort) : true;
             this.municipality = config.municipality || 'Göteborg';
+            this.entities = this._parseEntities(config.entities);
             this.config = config;
         }
 
         _parseEntities(configuredEntities) {
             return configuredEntities.map(entity => {
                 if (typeof entity === 'string') {
-                    return {'id': entity, 'delay': 0};
+                    return {'id': entity};
                 } else {
                     return Object.assign({}, entity);
                 }
@@ -79,7 +79,7 @@ customElements.whenDefined('card-tools').then(() => {
         _sortEntities() {
             this.entities = this.entities
                 .filter(entity => entity.id in this.hass.states)
-                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay}, entity));
+                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay || 0}, entity));
                 
             if (this.shouldSort) {
                 this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
