@@ -117,4 +117,4 @@ sort: true
 
 
 ## Västtrafik updated their designs?
-To get the latest designs/colors exported as css, run `python3 ../helpers/generate_css.py` from the `dist` folder.
+To get the latest designs/colours exported as css, run `python3 ../helpers/generate_css.py` from the `dist` folder.
