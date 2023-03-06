@@ -1,47 +1,107 @@
 vasttrafik-card
 ========================
 
-Styled entities using the Västtrafik theme in a lovelace entities card. All trams and buses are styled using the colours used in Göteborg, so if you are living in Västra Götaland but outside of Göteborg you have to change the css manually. This card also displays:
+Styled entities using the Västtrafik theme in a lovelace entities card. All trams and buses are styled using the colours used in their respective municipality.
+
+This card also displays:
 * When the next vehicle is leaving
 * Departing station (which requires [this version](https://github.com/Miicroo/ha-vasttrafik) of the Västtrafik sensor)
-* When you have to leave home in order to catch the vehicle (or the amount of minutes until the vehicle leaves if no delay is set).
+* When you have to leave home in order to catch the vehicle (also known as the sensor delay).
+* Sorting of entities, showing the next entity to depart first
 
 > ![v1.0.0](resources/info.svg)
 > 
 > If you are looking for the Västtrafik-card where you can *group* sensors based on departure or destination, you want the (discontinued) [v1.0.0](https://github.com/Miicroo/lovelace-vasttrafik-card/releases/tag/v1.0.0)
 
 ## Options
-| Name     | Type   | Default      | Description
-| ----     | ----   | -------      | -----------
-| entities | list   | **Required** | See [entity format](https://github.com/Miicroo/lovelace-vasttrafik-card#entity-format)
-| title    | string | Västtrafik   | The title of the card
+| Name         | Type    | Default      | Description
+| ----         | ----    | -------      | -----------
+| entities     | list    | **Required** | A list of entity sensors provided by the Västtrafik integration
+| title        | string  | Västtrafik   | The title of the card
+| municipality | string  | Göteborg     | The municipality of the station(s), [more info here](https://github.com/Miicroo/lovelace-vasttrafik-card#municipality)
+| sort         | boolean | true         | Whether to sort the departures (earliest first), or keep the entities in the given order
 
-## Entity format
-Entities can be defined in 3 different ways:
+## Municipality
+As there are many lines with the same name or number in Västra Götaland, the styles are split by municipality. For accuracy, choose the municipality of your departing sensor(s).
 
-1) As a simple string containing the id. If there is a delay added to the sensor it will be used in calculating next departure time.
-```yaml
-- sensor.ekedal_till_brunnsparken
-- sensor.godhemsgatan_till_brunnsparken
+Currently supported municipalities:
 ```
-2) As an object containing the id and a delay in minutes (e.g. how long it would take you to walk to the departing station). This will override the delay that is specified in the sensor configuration.
-```yaml
-- id: sensor.ekedal_till_brunnsparken
-  delay: 3
-- sensor.godhemsgatan_till_brunnsparken
-  delay: 2
+Ale
+Alingsås
+Åmål
+Årjäng
+Bengtsfors
+Bollebygd
+Borås
+Dals-Ed
+Essunga
+Falkenberg
+Falköping
+Färgelanda
+Göteborg
+Götene
+Grästorp
+Gullspång
+Habo
+Hallsberg
+Härryda
+Herrljunga
+Hjo
+Jönköping
+Karlsborg
+Kristinehamn
+Kumla
+Kungälv
+Kungsbacka
+Laxå
+Lerum
+Lidköping
+Lilla Edet
+Lysekil
+Mariestad
+Mark
+Mellerud
+Mölndal
+Mullsjö
+Munkedal
+Nässjö
+Norge
+Öckerö
+Örebro
+Orust
+Partille
+Säffle
+Skara
+Skövde
+Sotenäs
+Stenungsund
+Strömstad
+Svenljunga
+Tanum
+Tibro
+Tidaholm
+Tjörn
+Töreboda
+Tranemo
+Trollhättan
+Uddevalla
+Ulricehamn
+Vänersborg
+Vara
+Varberg
+Vårgårda
+Västra Götaland
 ```
-3) As a combination of 1) and 2), the entities without specified delay will get the delay specified in the sensor configuration.
-
 
 ## Examples
 ```yaml
 type: 'custom:vasttrafik-card'
 title: 'Mot Brunnsparken'
 entities:
-  - id: sensor.ekedal_till_brunnsparken
-    delay: 3
+  - sensor.ekedal_till_brunnsparken
   - sensor.godhemsgatan_till_brunnsparken
+municipality: Göteborg
+sort: true
 ```
 
 ![Example 1](https://raw.githubusercontent.com/Miicroo/lovelace-vasttrafik-card/master/resources/1.png)
