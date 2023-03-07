@@ -107,8 +107,8 @@ sort: true
 
 ![Example 1](https://raw.githubusercontent.com/Miicroo/lovelace-vasttrafik-card/master/resources/1.png)
 
-## Tram and bus styles
-![Colours for each tram or bus line](https://raw.githubusercontent.com/Miicroo/ha-lovelace-vasttrafik_card/master/resources/colours.png)
+## Tram and bus styles (example shows Göteborg)
+![Colours for each tram or bus line](https://raw.githubusercontent.com/Miicroo/lovelace-vasttrafik-card/feature/more-bus-lines/resources/new_colours2.png)
 
 ## In case of errors
 1. A warning will be printed to the console if any entity id you provide is not attributed to Västtrafik
