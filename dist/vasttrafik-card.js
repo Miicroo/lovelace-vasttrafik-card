@@ -3,15 +3,53 @@ customElements.whenDefined('card-tools').then(() => {
 
     class VasttrafikCard extends ct.LitElement {
 
-	static async getConfigElement() {
+        static async getConfigElement() {
             await import("./vasttrafik-card-editor.js");
             return document.createElement("vasttrafik-card-editor");
         }
-	
+    
         static get properties() {
             return {
                 config: {},
                 hass: {},
+                translations: {},
+            };
+        }
+        
+        constructor() {
+            super();
+
+            this.translations = {
+                'en': {
+                    'departureTime': 'Time',
+                    'departureStation': 'From',
+                    'leaveHome': 'Leave in',
+                },
+                'sv': {
+                    'departureTime': 'Avgår kl.',
+                    'departureStation': 'Från',
+                    'leaveHome': 'Gå om',
+                },
+                'nb': {
+                    'departureTime': 'Avgang kl.',
+                    'departureStation': 'Går fra',
+                    'leaveHome': 'Gå om',
+                },
+                'nn': {
+                    'departureTime': 'Avgang kl.',
+                    'departureStation': 'Går fra',
+                    'leaveHome': 'Gå om',
+                },
+                'da': {
+                    'departureTime': 'Afgang kl.',
+                    'departureStation': 'Afgår fra',
+                    'leaveHome': 'Afsted om',
+                },
+                'nl': {
+                    'departureTime': 'Vertrektijd',
+                    'departureStation': 'Van',
+                    'leaveHome': 'Vertrek over',
+                },
             };
         }
 
@@ -34,36 +72,36 @@ customElements.whenDefined('card-tools').then(() => {
         }
 
         render() {
-	        if (!this.isVerified) {
+            if (!this.isVerified) {
                 this._verifyEntities();
                 this.isVerified = true;
             }
-	    
+        
             this._sortEntities();
             const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
             const linesCssFile = `lines-${this.municipality.toLowerCase().replace(' ', '-').replace('å', 'a').replace('ä', 'a').replace('ö', 'o')}.css`;
 
             return ct.LitHtml`
-	            <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
+                <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/vasttrafik-card.css"></link>
                 <link type="text/css" rel="stylesheet" href="/local/community/lovelace-vasttrafik-card/${linesCssFile}"></link>
-	            <ha-card>
-	                <div class="card-header">
-	                    ${this.title}
-	                </div>
-	                <div>
-	                    <table>
-	                        <tr>
-	                            <th align="left"></th>
-	                            <th align="left">Time</th>
-	                            <th align="left">From</th>
-	                            <th align="left">Leave home</th>
-	                        </tr>
-	                        ${renderedEntities}
-	                    </table>
-	                </div>
-	            </ha-card>`;
+                <ha-card>
+                    <div class="card-header">
+                        ${this.title}
+                    </div>
+                    <div>
+                        <table>
+                            <tr>
+                                <th align="left"></th>
+                                <th align="left">${this._getTranslatedText('departureTime')}</th>
+                                <th align="left">${this._getTranslatedText('departureStation')}</th>
+                                <th align="left">${this._getTranslatedText('leaveHome')}</th>
+                            </tr>
+                            ${renderedEntities}
+                        </table>
+                    </div>
+                </ha-card>`;
         }
-	
+    
         _verifyEntities() {
             this.entities
                 .filter(entity => !!this.hass.states[entity.id])
@@ -127,6 +165,15 @@ customElements.whenDefined('card-tools').then(() => {
             }
 
             return hourDiff * 60 + minuteDiff - entity.delay;
+        }
+        
+        _getTranslatedText(textKey) {
+            let language = this.hass?.language || 'en';
+            if (!this.translations.hasOwnProperty(language)) {
+                console.debug(`Language "${language}" is not configured, using english instead`);
+                language = 'en';
+            }
+            return this.translations[language][textKey] || 'Unknown';
         }
     }
 
