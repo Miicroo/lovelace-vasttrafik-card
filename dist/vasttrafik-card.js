@@ -48,7 +48,7 @@ customElements.whenDefined('card-tools').then(() => {
                 'nl': {
                     'departureTime': 'Vertrektijd',
                     'departureStation': 'Van',
-                    'leaveHome': 'Verlat om',
+                    'leaveHome': 'Vertrek over',
                 },
             };
         }
