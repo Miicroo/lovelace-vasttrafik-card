@@ -6,6 +6,7 @@ Styled entities using the Västtrafik theme in a lovelace entities card. All tra
 This card also displays:
 * When the next vehicle is leaving
 * Departing station (which requires [this version](https://github.com/Miicroo/ha-vasttrafik) of the Västtrafik sensor)
+* Heading / arriving station
 * When you have to leave home in order to catch the vehicle (also known as the sensor delay).
 * Sorting of entities, showing the next entity to depart first
 
