@@ -67,6 +67,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.municipality = config.municipality || 'Göteborg';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
+            this.warningCount = 0;
         }
 
         _parseEntities(configuredEntities) {
@@ -85,7 +86,9 @@ customElements.whenDefined('card-tools').then(() => {
                 this.isVerified = true;
             }
         
+            this.entities = this._fetchDataFromHass();
             this._sortEntities();
+
             const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
             const linesCssFile = `lines-${this.municipality.toLowerCase().replace(' ', '-').replace('å', 'a').replace('ä', 'a').replace('ö', 'o')}.css`;
 
@@ -123,11 +126,19 @@ customElements.whenDefined('card-tools').then(() => {
                 });
         }
 
-        _sortEntities() {
-            this.entities = this.entities
-                .filter(entity => entity.id in this.hass.states)
+        _fetchDataFromHass() {
+            return this.entities
+                .filter(entity => {
+                    const hasState = entity.id in this.hass.states;
+                    if (!hasState) {
+                        this._systemLog(`${entity.id} has no state in hass, ignoring`);
+                    }
+                    return hasState;
+                })
                 .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay || 0}, entity));
-                
+        }
+
+        _sortEntities() {                
             if (this.shouldSort) {
                 this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
             }
@@ -174,8 +185,14 @@ customElements.whenDefined('card-tools').then(() => {
                 minuteDiff += 60;
                 hourDiff--;
             }
+            
+            const timeUntil = hourDiff * 60 + minuteDiff - entity.delay;
+            if (timeUntil > 30 && this.warningCount < 100) {
+                this._systemLog(`${line} has old values, departures in ${timeUntil} at ${entity.departureTime}. Expected departure: ${expectedTime}, now: ${now}, entity: ${entity}`);
+                this.warningCount += 1;
+            }
 
-            return hourDiff * 60 + minuteDiff - entity.delay;
+            return timeUntil;
         }
         
         _getTranslatedText(textKey) {
@@ -185,6 +202,16 @@ customElements.whenDefined('card-tools').then(() => {
                 language = 'en';
             }
             return this.translations[language][textKey] || 'Unknown';
+        }
+
+        _systemLog(msg) {
+            this.hass.callService("system_log", "write",
+                    {
+                        "level": "warning",
+                        "logger": "lovelace-vasttrafik-card",
+                        "message": msg,
+                    }
+                );
         }
     }
 
