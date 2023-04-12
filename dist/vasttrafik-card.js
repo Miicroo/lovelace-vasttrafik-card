@@ -23,31 +23,37 @@ customElements.whenDefined('card-tools').then(() => {
                 'en': {
                     'departureTime': 'Time',
                     'departureStation': 'From',
+                    'heading': 'Heading to',
                     'leaveHome': 'Leave in',
                 },
                 'sv': {
                     'departureTime': 'Avgår kl.',
                     'departureStation': 'Från',
+                    'heading': 'Till',
                     'leaveHome': 'Gå om',
                 },
                 'nb': {
                     'departureTime': 'Avgang kl.',
                     'departureStation': 'Går fra',
+                    'heading': 'Til',
                     'leaveHome': 'Gå om',
                 },
                 'nn': {
                     'departureTime': 'Avgang kl.',
                     'departureStation': 'Går fra',
+                    'heading': 'Til',
                     'leaveHome': 'Gå om',
                 },
                 'da': {
                     'departureTime': 'Afgang kl.',
                     'departureStation': 'Afgår fra',
+                    'heading': 'Til',
                     'leaveHome': 'Afsted om',
                 },
                 'nl': {
                     'departureTime': 'Vertrektijd',
                     'departureStation': 'Van',
+                    'heading': 'Naar',
                     'leaveHome': 'Vertrek over',
                 },
             };
@@ -56,6 +62,8 @@ customElements.whenDefined('card-tools').then(() => {
         setConfig(config) {
             this.title = config.title || 'Västtrafik';
             this.shouldSort = config.sort !== undefined ? !!(config.sort) : true;
+            this.showFrom = config.showFrom !== undefined ? !!(config.showFrom) : true;
+            this.showTo = config.showTo !== undefined ? !!(config.showTo) : false;
             this.municipality = config.municipality || 'Göteborg';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
@@ -93,7 +101,8 @@ customElements.whenDefined('card-tools').then(() => {
                             <tr>
                                 <th align="left"></th>
                                 <th align="left">${this._getTranslatedText('departureTime')}</th>
-                                <th align="left">${this._getTranslatedText('departureStation')}</th>
+                                ${this.showFrom ? ct.LitHtml`<th align="left">${this._getTranslatedText('departureStation')}</th>` : ''}
+                                ${this.showTo ? ct.LitHtml`<th align="left">${this._getTranslatedText('heading')}</th>` : ''}
                                 <th align="left">${this._getTranslatedText('leaveHome')}</th>
                             </tr>
                             ${renderedEntities}
@@ -137,11 +146,13 @@ customElements.whenDefined('card-tools').then(() => {
             const departureTime = hassEntity.state;
             const timeUntilLeave = this._getTimeUntil(entity);
             const from = attributes.from || '';
+            const heading = attributes.to || '';
 
             return ct.LitHtml`<tr>
                             <td class="${lineClass} line">${line}</td>
                             <td>${departureTime}</td>
-                            <td>${from}</td>
+                            ${this.showFrom ? ct.LitHtml`<td>${from}</td>` : ''}
+                            ${this.showTo ? ct.LitHtml`<td>${heading}</td>` : ''}
                             <td>${timeUntilLeave} minutes</td>
                         </tr>`;
         }
