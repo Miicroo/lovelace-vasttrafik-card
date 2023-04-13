@@ -67,6 +67,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.municipality = config.municipality || 'Göteborg';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
+            this.warningCount = 0;
         }
 
         _parseEntities(configuredEntities) {
@@ -85,8 +86,10 @@ customElements.whenDefined('card-tools').then(() => {
                 this.isVerified = true;
             }
         
-            this._sortEntities();
-            const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
+            let hassEntities = this._getHassEntities();
+            hassEntities = this._sortEntities(hassEntities);
+            const renderedEntities = hassEntities.map(entity => this._renderEntity(entity));
+
             const linesCssFile = `lines-${this.municipality.toLowerCase().replace(' ', '-').replace('å', 'a').replace('ä', 'a').replace('ö', 'o')}.css`;
 
             return ct.LitHtml`
@@ -112,39 +115,37 @@ customElements.whenDefined('card-tools').then(() => {
         }
     
         _verifyEntities() {
-            this.entities
-                .filter(entity => !!this.hass.states[entity.id])
+            this._getHassEntities()
                 .forEach(entity => {
-                    const attribution = this.hass.states[entity.id].attributes.attribution;
-
+                    const attribution = entity.attributes.attribution;
                     if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
-                        console.warn(`WARNING: ${entity.id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
+                        console.warn(`WARNING: ${entity.entity_id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
                     }
                 });
         }
 
-        _sortEntities() {
-            this.entities = this.entities
-                .filter(entity => entity.id in this.hass.states)
-                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay || 0}, entity));
-                
-            if (this.shouldSort) {
-                this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
-            }
+        // Get the hass representations of this.entities
+        _getHassEntities() {
+            return this.entities
+                .filter(entity => this.hass.states.hasOwnProperty(entity.id))
+                .map(entity => this.hass.states[entity.id]);
         }
 
-        _renderEntity(entity) {
-            if (!(entity.id in this.hass.states)) {
-                return;
+        _sortEntities(hassEntities) {                
+            if (this.shouldSort) {
+                hassEntities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
             }
 
-            const hassEntity = this.hass.states[entity.id];
+            return hassEntities;
+        }
+
+        _renderEntity(hassEntity) {
             const attributes = hassEntity.attributes;
 
             const line = attributes.line;
             const lineClass = this._getLineClass(line);
             const departureTime = hassEntity.state;
-            const timeUntilLeave = this._getTimeUntil(entity);
+            const timeUntilLeave = this._getTimeUntil(hassEntity);
             const from = attributes.from || '';
             const heading = attributes.to || '';
 
@@ -161,11 +162,11 @@ customElements.whenDefined('card-tools').then(() => {
             return `line-${line}`;
         }
 
-        _getTimeUntil(entity) {
+        _getTimeUntil(hassEntity) {
             const now = new Date();
             const nowHour = now.getHours();
             const nowMinute = now.getMinutes();
-            const expectedTime = entity.departureTime.split(':');
+            const expectedTime = hassEntity.state.split(':');
             const expectedHour = parseInt(expectedTime[0]);
             const expectedMinute = parseInt(expectedTime[1]);
             let hourDiff = expectedHour < nowHour ? 24 + (expectedHour - nowHour) : expectedHour - nowHour;
@@ -174,8 +175,8 @@ customElements.whenDefined('card-tools').then(() => {
                 minuteDiff += 60;
                 hourDiff--;
             }
-
-            return hourDiff * 60 + minuteDiff - entity.delay;
+            const delay = hassEntity.attributes.delay || 0;
+            return hourDiff * 60 + minuteDiff - delay;
         }
         
         _getTranslatedText(textKey) {
