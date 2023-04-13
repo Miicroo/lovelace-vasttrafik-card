@@ -176,13 +176,7 @@ customElements.whenDefined('card-tools').then(() => {
                 hourDiff--;
             }
             const delay = hassEntity.attributes.delay || 0;
-            const timeUntil = hourDiff * 60 + minuteDiff - delay;
-            if ((timeUntil > 30 || timeUntil < -5) && this.warningCount < 100) {
-                this._systemLog(`${hassEntity.entity_id} has old values, departures in ${timeUntil} at ${hassEntity.state}. Expected departure: ${expectedTime}, now: ${now}, entity: ${hassEntity}`);
-                this.warningCount += 1;
-            }
-
-            return timeUntil;
+            return hourDiff * 60 + minuteDiff - delay;
         }
         
         _getTranslatedText(textKey) {
@@ -192,16 +186,6 @@ customElements.whenDefined('card-tools').then(() => {
                 language = 'en';
             }
             return this.translations[language][textKey] || 'Unknown';
-        }
-
-        _systemLog(msg) {
-            this.hass.callService("system_log", "write",
-                    {
-                        "level": "warning",
-                        "logger": "lovelace-vasttrafik-card",
-                        "message": msg,
-                    }
-                );
         }
     }
 
