@@ -86,10 +86,10 @@ customElements.whenDefined('card-tools').then(() => {
                 this.isVerified = true;
             }
         
-            this.entities = this._fetchDataFromHass();
-            this._sortEntities();
+            let hassEntities = this._getHassEntities();
+            hassEntities = this._sortEntities(hassEntities);
+            const renderedEntities = hassEntities.map(entity => this._renderEntity(entity));
 
-            const renderedEntities = this.entities.map(entity => this._renderEntity(entity));
             const linesCssFile = `lines-${this.municipality.toLowerCase().replace(' ', '-').replace('å', 'a').replace('ä', 'a').replace('ö', 'o')}.css`;
 
             return ct.LitHtml`
@@ -115,47 +115,37 @@ customElements.whenDefined('card-tools').then(() => {
         }
     
         _verifyEntities() {
-            this.entities
-                .filter(entity => !!this.hass.states[entity.id])
+            this._getHassEntities()
                 .forEach(entity => {
-                    const attribution = this.hass.states[entity.id].attributes.attribution;
-
+                    const attribution = entity.attributes.attribution;
                     if (!attribution || !attribution.toLowerCase().includes('västtrafik')) {
-                        console.warn(`WARNING: ${entity.id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
+                        console.warn(`WARNING: ${entity.entity_id} does not seem to be a Västtrafik-sensor. Instead it is attributed to ${attribution}`);
                     }
                 });
         }
 
-        _fetchDataFromHass() {
+        // Get the hass representations of this.entities
+        _getHassEntities() {
             return this.entities
-                .filter(entity => {
-                    const hasState = entity.id in this.hass.states;
-                    if (!hasState) {
-                        this._systemLog(`${entity.id} has no state in hass, ignoring`);
-                    }
-                    return hasState;
-                })
-                .map(entity => Object.assign({}, {'departureTime': this.hass.states[entity.id].state, 'delay': this.hass.states[entity.id].attributes.delay || 0}, entity));
+                .filter(entity => this.hass.states.hasOwnProperty(entity.id))
+                .map(entity => this.hass.states[entity.id]);
         }
 
-        _sortEntities() {                
+        _sortEntities(hassEntities) {                
             if (this.shouldSort) {
-                this.entities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
+                hassEntities.sort((a, b) => this._getTimeUntil(a) - this._getTimeUntil(b));
             }
+
+            return hassEntities;
         }
 
-        _renderEntity(entity) {
-            if (!(entity.id in this.hass.states)) {
-                return;
-            }
-
-            const hassEntity = this.hass.states[entity.id];
+        _renderEntity(hassEntity) {
             const attributes = hassEntity.attributes;
 
             const line = attributes.line;
             const lineClass = this._getLineClass(line);
             const departureTime = hassEntity.state;
-            const timeUntilLeave = this._getTimeUntil(entity);
+            const timeUntilLeave = this._getTimeUntil(hassEntity);
             const from = attributes.from || '';
             const heading = attributes.to || '';
 
@@ -172,11 +162,11 @@ customElements.whenDefined('card-tools').then(() => {
             return `line-${line}`;
         }
 
-        _getTimeUntil(entity) {
+        _getTimeUntil(hassEntity) {
             const now = new Date();
             const nowHour = now.getHours();
             const nowMinute = now.getMinutes();
-            const expectedTime = entity.departureTime.split(':');
+            const expectedTime = hassEntity.state.split(':');
             const expectedHour = parseInt(expectedTime[0]);
             const expectedMinute = parseInt(expectedTime[1]);
             let hourDiff = expectedHour < nowHour ? 24 + (expectedHour - nowHour) : expectedHour - nowHour;
@@ -185,10 +175,10 @@ customElements.whenDefined('card-tools').then(() => {
                 minuteDiff += 60;
                 hourDiff--;
             }
-            
-            const timeUntil = hourDiff * 60 + minuteDiff - entity.delay;
-            if (timeUntil > 30 && this.warningCount < 100) {
-                this._systemLog(`${line} has old values, departures in ${timeUntil} at ${entity.departureTime}. Expected departure: ${expectedTime}, now: ${now}, entity: ${entity}`);
+            const delay = hassEntity.attributes.delay || 0;
+            const timeUntil = hourDiff * 60 + minuteDiff - delay;
+            if ((timeUntil > 30 || timeUntil < -5) && this.warningCount < 100) {
+                this._systemLog(`${hassEntity.entity_id} has old values, departures in ${timeUntil} at ${hassEntity.state}. Expected departure: ${expectedTime}, now: ${now}, entity: ${hassEntity}`);
                 this.warningCount += 1;
             }
 
