@@ -67,7 +67,6 @@ customElements.whenDefined('card-tools').then(() => {
             this.municipality = config.municipality || 'Göteborg';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
-            this.warningCount = 0;
         }
 
         _parseEntities(configuredEntities) {
