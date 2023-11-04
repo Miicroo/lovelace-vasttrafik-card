@@ -24,36 +24,42 @@ customElements.whenDefined('card-tools').then(() => {
                     'departureTime': 'Time',
                     'departureStation': 'From',
                     'heading': 'Heading to',
+                    'direction': 'Direction',
                     'leaveHome': 'Leave in',
                 },
                 'sv': {
                     'departureTime': 'Avgår kl.',
                     'departureStation': 'Från',
                     'heading': 'Till',
+                    'direction': 'Mot',
                     'leaveHome': 'Gå om',
                 },
                 'nb': {
                     'departureTime': 'Avgang kl.',
                     'departureStation': 'Går fra',
                     'heading': 'Til',
+                    'direction': 'Mot',
                     'leaveHome': 'Gå om',
                 },
                 'nn': {
                     'departureTime': 'Avgang kl.',
                     'departureStation': 'Går fra',
                     'heading': 'Til',
+                    'direction': 'Mot',
                     'leaveHome': 'Gå om',
                 },
                 'da': {
                     'departureTime': 'Afgang kl.',
                     'departureStation': 'Afgår fra',
                     'heading': 'Til',
+                    'direction': 'Mod',
                     'leaveHome': 'Afsted om',
                 },
                 'nl': {
                     'departureTime': 'Vertrektijd',
                     'departureStation': 'Van',
                     'heading': 'Naar',
+                    'direction': 'Richting',
                     'leaveHome': 'Vertrek over',
                 },
             };
@@ -64,6 +70,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.shouldSort = config.sort !== undefined ? !!(config.sort) : true;
             this.showFrom = config.showFrom !== undefined ? !!(config.showFrom) : true;
             this.showTo = config.showTo !== undefined ? !!(config.showTo) : false;
+            this.showDir = config.showDir !== undefined ? !!(config.showDir) : false;
             this.municipality = config.municipality || 'Göteborg';
             this.entities = this._parseEntities(config.entities);
             this.config = config;
@@ -105,6 +112,7 @@ customElements.whenDefined('card-tools').then(() => {
                                 <th align="left">${this._getTranslatedText('departureTime')}</th>
                                 ${this.showFrom ? ct.LitHtml`<th align="left">${this._getTranslatedText('departureStation')}</th>` : ''}
                                 ${this.showTo ? ct.LitHtml`<th align="left">${this._getTranslatedText('heading')}</th>` : ''}
+                                ${this.showDir ? ct.LitHtml`<th align="left">${this._getTranslatedText('direction')}</th>` : ''}
                                 <th align="left">${this._getTranslatedText('leaveHome')}</th>
                             </tr>
                             ${renderedEntities}
@@ -147,12 +155,14 @@ customElements.whenDefined('card-tools').then(() => {
             const timeUntilLeave = this._getTimeUntil(hassEntity);
             const from = attributes.from || '';
             const heading = attributes.to || '';
+            const direction = attributes.direction || '';
 
             return ct.LitHtml`<tr>
                             <td class="${lineClass} line">${line}</td>
                             <td>${departureTime}</td>
                             ${this.showFrom ? ct.LitHtml`<td>${from}</td>` : ''}
                             ${this.showTo ? ct.LitHtml`<td>${heading}</td>` : ''}
+                            ${this.showDir ? ct.LitHtml`<td>${direction}</td>` : ''}
                             <td>${timeUntilLeave} minutes</td>
                         </tr>`;
         }
