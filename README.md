@@ -5,7 +5,7 @@ Styled entities using the Västtrafik theme in a lovelace entities card. All tra
 
 This card also displays:
 * When the next vehicle is leaving
-* Departing station (which requires [this version](https://github.com/Miicroo/ha-vasttrafik) of the Västtrafik sensor)
+* Departing station
 * Heading / arriving station
 * When you have to leave home in order to catch the vehicle (also known as the sensor delay).
 * Sorting of entities, showing the next entity to depart first
@@ -23,6 +23,7 @@ This card also displays:
 | sort         | boolean | true         | Whether to sort the departures (earliest first), or keep the entities in the given order
 | showFrom     | boolean | true         | Whether to show the departing station or not
 | showTo       | boolean | false        | Whether to show the arriving station or not
+| showDest     | boolean | false        | Whether to show the destination station or not
 
 ## Municipality
 As there are many lines with the same name or number in Västra Götaland, the styles are split by municipality. For accuracy, choose the municipality of your departing sensor(s).
@@ -115,8 +116,7 @@ sort: true
 
 ## In case of errors
 1. A warning will be printed to the console if any entity id you provide is not attributed to Västtrafik
-2. The default sensor does not expose from/to, use [this one](https://github.com/Miicroo/ha-vasttrafik) instead
-3. The sensor updates every 2 minutes, so you will sometimes get `-2 minutes` until departure
+2. The sensor updates every 2 minutes, so you will sometimes get `-2 minutes` until departure
 
 
 ## Västtrafik updated their designs?
