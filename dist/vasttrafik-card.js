@@ -149,6 +149,11 @@ customElements.whenDefined('card-tools').then(() => {
         _renderEntity(hassEntity) {
             const attributes = hassEntity.attributes;
 
+            // Skip rendering if the line is empty or undefined
+            if (!attributes.line) {
+                return ct.LitHtml``;  // Returns an empty template, skipping rendering for this entity
+            } else {
+    
             const line = attributes.line;
             const lineClass = this._getLineClass(line);
             const departureTime = hassEntity.state;
@@ -165,6 +170,7 @@ customElements.whenDefined('card-tools').then(() => {
                             ${this.showDir ? ct.LitHtml`<td>${direction}</td>` : ''}
                             <td>${timeUntilLeave} minutes</td>
                         </tr>`;
+            }
         }
 
         _getLineClass(line) {
