@@ -34,7 +34,7 @@ def generate_css(lines_by_color):
         border_color = hex_to_rgb_string(lines[0]['borderColor'])
         color = hex_to_rgb_string(lines[0]['foregroundColor'])
 
-        line_names = set(map(lambda line: f'.line-{line["shortName"]}', lines))
+        line_names = sorted(set(map(lambda line: f'.line-{line["shortName"]}', lines)))
         css_class = ', '.join(line_names)
 
         css = f'{css_class} {{\n\tborder-color: {border_color};\n\tcolor: {color};\n\tbackground-color: {background_color};\n}}'
