@@ -39,6 +39,7 @@ def generate_css(lines_by_color):
 
         css = f'{css_class} {{\n\tborder-color: {border_color};\n\tcolor: {color};\n\tbackground-color: {background_color};\n}}'
         css_styles.append(css)
+    css_styles.sort()
 
     return '\n'.join(css_styles)
 

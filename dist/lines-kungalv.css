@@ -3,14 +3,14 @@
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
 }
+.line-2 {
+	border-color: rgb(0, 113, 193);
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 113, 193);
+}
 .line-242, .line-339, .line-422 {
 	border-color: rgb(255, 255, 80);
 	color: rgb(0, 97, 235);
-	background-color: rgb(255, 255, 80);
-}
-.line-X4 {
-	border-color: rgb(255, 255, 80);
-	color: rgb(212, 0, 162);
 	background-color: rgb(255, 255, 80);
 }
 .line-3 {
@@ -18,8 +18,8 @@
 	color: rgb(255, 255, 255);
 	background-color: rgb(165, 68, 154);
 }
-.line-2 {
-	border-color: rgb(0, 113, 193);
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 113, 193);
+.line-X4 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(212, 0, 162);
+	background-color: rgb(255, 255, 80);
 }
