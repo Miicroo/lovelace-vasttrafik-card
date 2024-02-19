@@ -30,7 +30,7 @@ Install card-tools [by adding card-tools.js to your lovelace resources](https://
 | sort         | boolean | true         | Whether to sort the departures (earliest first), or keep the entities in the given order                               |
 | showFrom     | boolean | true         | Whether to show the departing station or not                                                                           |
 | showTo       | boolean | false        | Whether to show the arriving station or not                                                                            |
-| showDest     | boolean | false        | Whether to show the destination station or not                                                                         |
+| showDir      | boolean | false        | Whether to show the destination station or not                                                                         |
 
 ## Municipality
 
