@@ -71,6 +71,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.showFrom = config.showFrom !== undefined ? !!(config.showFrom) : true;
             this.showTo = config.showTo !== undefined ? !!(config.showTo) : false;
             this.showDir = config.showDir !== undefined ? !!(config.showDir) : false;
+            this.showLeaveHome = config.showLeaveHome !== undefined ? !!(config.showLeaveHome) : true;
             this.municipality = config.municipality || 'Göteborg';
             this.userDefinedLanguage = config.language;
             this.entities = this._parseEntities(config.entities);
@@ -114,7 +115,7 @@ customElements.whenDefined('card-tools').then(() => {
                                 ${this.showFrom ? ct.LitHtml`<th align="left">${this._getTranslatedText('departureStation')}</th>` : ''}
                                 ${this.showTo ? ct.LitHtml`<th align="left">${this._getTranslatedText('heading')}</th>` : ''}
                                 ${this.showDir ? ct.LitHtml`<th align="left">${this._getTranslatedText('direction')}</th>` : ''}
-                                <th align="left">${this._getTranslatedText('leaveHome')}</th>
+                                ${this.showLeaveHome ? ct.LitHtml`<th align="left">${this._getTranslatedText('leaveHome')}</th>` : ''}
                             </tr>
                             ${renderedEntities}
                         </table>
@@ -169,7 +170,7 @@ customElements.whenDefined('card-tools').then(() => {
                             ${this.showFrom ? ct.LitHtml`<td>${from}</td>` : ''}
                             ${this.showTo ? ct.LitHtml`<td>${heading}</td>` : ''}
                             ${this.showDir ? ct.LitHtml`<td>${direction}</td>` : ''}
-                            <td>${timeUntilLeave} minutes</td>
+                            ${this.showLeaveHome ? ct.LitHtml`<td>${timeUntilLeave} minutes</td>` : ''}
                         </tr>`;
             }
         }
