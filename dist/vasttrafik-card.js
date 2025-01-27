@@ -72,6 +72,7 @@ customElements.whenDefined('card-tools').then(() => {
             this.showTo = config.showTo !== undefined ? !!(config.showTo) : false;
             this.showDir = config.showDir !== undefined ? !!(config.showDir) : false;
             this.municipality = config.municipality || 'Göteborg';
+            this.userDefinedLanguage = config.language;
             this.entities = this._parseEntities(config.entities);
             this.config = config;
         }
@@ -157,7 +158,7 @@ customElements.whenDefined('card-tools').then(() => {
             const line = attributes.line;
             const lineClass = this._getLineClass(line);
             const departureTime = hassEntity.state;
-            const timeUntilLeave = this._getTimeUntil(hassEntity);
+            const timeUntilLeave = Math.abs(this._getTimeUntil(hassEntity), 0);
             const from = attributes.from || '';
             const heading = attributes.to || '';
             const direction = attributes.direction || '';
@@ -195,7 +196,7 @@ customElements.whenDefined('card-tools').then(() => {
         }
         
         _getTranslatedText(textKey) {
-            let language = this.hass?.language || 'en';
+            let language = this.userDefinedLanguage || this.hass?.language || 'en';
             if (!this.translations.hasOwnProperty(language)) {
                 console.debug(`Language "${language}" is not configured, using english instead`);
                 language = 'en';

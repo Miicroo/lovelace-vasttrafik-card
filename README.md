@@ -31,6 +31,7 @@ Install card-tools [by adding card-tools.js to your lovelace resources](https://
 | showFrom     | boolean | true         | Whether to show the departing station or not                                                                           |
 | showTo       | boolean | false        | Whether to show the arriving station or not                                                                            |
 | showDir      | boolean | false        | Whether to show the destination station or not                                                                         |
+| language     | string  | null         | User defined language to use in the card. Overrides system lanaguage
 
 ## Municipality
 
