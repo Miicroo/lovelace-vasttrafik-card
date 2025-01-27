@@ -4,7 +4,7 @@
 	background-color: rgb(198, 53, 57);
 }
 .line-100 {
-	border-color: rgb(255, 255, 80);
+	border-color: rgb(212, 0, 162);
 	color: rgb(212, 0, 162);
 	background-color: rgb(255, 255, 80);
 }
@@ -13,7 +13,7 @@
 	color: rgb(0, 97, 235);
 	background-color: rgb(255, 255, 80);
 }
-.line-150, .line-154, .line-157, .line-19, .line-20, .line-31, .line-402, .line-TÅG {
+.line-150, .line-154, .line-157, .line-19, .line-20, .line-21, .line-31, .line-402, .line-TÅG {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
@@ -24,7 +24,7 @@
 	background-color: rgb(0, 113, 193);
 }
 .line-3 {
-	border-color: rgb(165, 68, 154);
+	border-color: rgb(255, 255, 255);
 	color: rgb(255, 255, 255);
 	background-color: rgb(165, 68, 154);
 }
