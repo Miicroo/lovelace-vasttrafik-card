@@ -31,7 +31,8 @@ Install card-tools [by adding card-tools.js to your lovelace resources](https://
 | showFrom     | boolean | true         | Whether to show the departing station or not                                                                           |
 | showTo       | boolean | false        | Whether to show the arriving station or not                                                                            |
 | showDir      | boolean | false        | Whether to show the destination station or not                                                                         |
-| language     | string  | null         | User defined language to use in the card. Overrides system lanaguage
+| showLeaveHome| boolean | true         | Whether to show when to leave home to catch the bus or not. If you use the delay attribute for other purposes then when to leave home, set this to false                                                                         |
+| language     | string  | null         | User defined language to use in the card. Overrides system lanaguage |
 
 ## Municipality
 
