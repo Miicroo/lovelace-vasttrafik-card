@@ -130,7 +130,6 @@ sort: true
 ## In case of errors
 
 1. A warning will be printed to the console if any entity id you provide is not attributed to Västtrafik
-2. The sensor updates every 2 minutes, so you will sometimes get `-2 minutes` until departure
 
 ## Västtrafik updated their designs?
 
