@@ -1,5 +1,10 @@
-.line-501, .line-502, .line-512, .line-520, .line-521, .line-712, .line-TAXI, .line-TÅG {
+.line-501, .line-502, .line-503, .line-512, .line-520, .line-521, .line-712, .line-TAXI, .line-TÅG {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
+}
+.line-502, .line-503, .line-512, .line-520 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(0, 97, 235);
+	background-color: rgb(255, 255, 80);
 }

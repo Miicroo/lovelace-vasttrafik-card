@@ -1,15 +1,10 @@
-.line-1 {
-	border-color: rgb(198, 53, 57);
-	color: rgb(255, 255, 255);
-	background-color: rgb(198, 53, 57);
+.line-103, .line-158, .line-200, .line-202, .line-203, .line-211, .line-212, .line-313, .line-600 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(0, 97, 235);
+	background-color: rgb(255, 255, 80);
 }
-.line-1, .line-103, .line-158, .line-200, .line-202, .line-203, .line-211, .line-212, .line-313 {
+.line-158, .line-200, .line-211, .line-212, .line-313 {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
-}
-.line-2 {
-	border-color: rgb(0, 113, 193);
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 113, 193);
 }

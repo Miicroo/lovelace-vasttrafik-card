@@ -1,5 +1,10 @@
-.line-501, .line-504, .line-505, .line-514, .line-530, .line-531, .line-533, .line-534, .line-TÅG {
+.line-501, .line-503, .line-514, .line-530, .line-531, .line-533, .line-534, .line-TÅG {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
+}
+.line-503, .line-504, .line-505, .line-514, .line-530, .line-531 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(0, 97, 235);
+	background-color: rgb(255, 255, 80);
 }

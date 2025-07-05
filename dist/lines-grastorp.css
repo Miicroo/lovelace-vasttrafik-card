@@ -1,10 +1,10 @@
-.line-1, .line-100, .line-104, .line-133, .line-151, .line-640, .line-645, .line-TÅG {
-	border-color: rgb(0, 108, 147);
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 108, 147);
-}
-.line-640 {
+.line-100, .line-104, .line-133, .line-600, .line-640 {
 	border-color: rgb(255, 255, 80);
 	color: rgb(0, 97, 235);
 	background-color: rgb(255, 255, 80);
+}
+.line-151, .line-640, .line-645, .line-TÅG {
+	border-color: rgb(0, 108, 147);
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 108, 147);
 }

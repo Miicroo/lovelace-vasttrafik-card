@@ -1,50 +1,10 @@
-.line-1 {
-	border-color: rgb(198, 53, 57);
-	color: rgb(255, 255, 255);
-	background-color: rgb(198, 53, 57);
+.line-1, .line-11, .line-14, .line-2, .line-200, .line-212, .line-300, .line-303, .line-4, .line-400, .line-401, .line-402, .line-5, .line-500, .line-501, .line-505, .line-510, .line-6, .line-600, .line-610, .line-613, .line-619, .line-620, .line-8, .line-9 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(0, 97, 235);
+	background-color: rgb(255, 255, 80);
 }
-.line-1, .line-200, .line-212, .line-300, .line-303, .line-310, .line-400, .line-401, .line-402, .line-500, .line-500X, .line-505, .line-510, .line-610, .line-611, .line-613, .line-615, .line-616, .line-618, .line-619, .line-620, .line-8, .line-9, .line-TÅG {
+.line-200, .line-212, .line-300, .line-510, .line-611, .line-615, .line-616, .line-618, .line-620, .line-TÅG {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
-}
-.line-10 {
-	border-color: rgb(194, 205, 197);
-	color: rgb(0, 67, 92);
-	background-color: rgb(194, 205, 197);
-}
-.line-12 {
-	border-color: rgb(118, 71, 18);
-	color: rgb(255, 255, 255);
-	background-color: rgb(118, 71, 18);
-}
-.line-13 {
-	border-color: rgb(248, 152, 40);
-	color: rgb(0, 67, 92);
-	background-color: rgb(248, 152, 40);
-}
-.line-2 {
-	border-color: rgb(0, 0, 0);
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 0, 0);
-}
-.line-3 {
-	border-color: rgb(2, 116, 70);
-	color: rgb(255, 255, 255);
-	background-color: rgb(2, 116, 70);
-}
-.line-4 {
-	border-color: rgb(0, 113, 193);
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 113, 193);
-}
-.line-6 {
-	border-color: rgb(216, 232, 176);
-	color: rgb(0, 108, 147);
-	background-color: rgb(216, 232, 176);
-}
-.line-7 {
-	border-color: rgb(253, 204, 153);
-	color: rgb(0, 67, 92);
-	background-color: rgb(253, 204, 153);
 }

@@ -23,8 +23,13 @@
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
 }
-.line-LILA {
-	border-color: rgb(255, 255, 255);
-	color: rgb(255, 255, 255);
-	background-color: rgb(165, 68, 154);
+.line-X {
+	border-color: rgb(229, 0, 71);
+	color: rgb(229, 0, 71);
+	background-color: rgb(255, 255, 255);
+}
+.line-X90 {
+	border-color: rgb(212, 0, 162);
+	color: rgb(212, 0, 162);
+	background-color: rgb(255, 255, 80);
 }

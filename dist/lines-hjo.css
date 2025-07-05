@@ -1,5 +1,10 @@
-.line-323, .line-402, .line-405, .line-406, .line-430, .line-435, .line-620 {
+.line-323, .line-406, .line-415, .line-435, .line-620 {
 	border-color: rgb(0, 108, 147);
 	color: rgb(255, 255, 255);
 	background-color: rgb(0, 108, 147);
+}
+.line-402, .line-406, .line-415, .line-620 {
+	border-color: rgb(255, 255, 80);
+	color: rgb(0, 97, 235);
+	background-color: rgb(255, 255, 80);
 }
